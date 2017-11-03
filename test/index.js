@@ -48,9 +48,40 @@ test('parse empty', t => {
 
 test('parse index', t => {
 	const input = ['/'];
-	const expect = [{ type:0, val:'/' }];
-	toParse(t, input, [expect]);
+	toParse(t, input, [
+		[{ type:0, val:'/' }]
+	]);
 });
+
+test('parse statics', t => {
+	const input = ['/about', 'contact', '/foobar'];
+	toParse(t, input, [
+		[{ type:0, val:'about' }],
+		[{ type:0, val:'contact' }],
+		[{ type:0, val:'foobar' }],
+	]);
+});
+
+test('parse params', t => {
+	const input = ['/:foo', 'books/:title', '/foo/:bar'];
+	toParse(t, input, [
+		[{ type:1, val:'foo' }],
+		[{ type:0, val:'books' }, { type:1, val:'title' }],
+		[{ type:0, val:'foo' }, { type:1, val:'bar' }]
+	]);
+});
+
+test('parse wilds', t => {
+	const input = ['*', '/*', 'foo/*', 'foo/bar/*'];
+	toParse(t, input, [
+		[{ type:2, val:'*' }],
+		[{ type:2, val:'*' }],
+		[{ type:0, val:'foo' }, { type:2, val:'*' }],
+		[{ type:0, val:'foo' }, { type:0, val:'bar' }, { type:2, val:'*' }]
+	]);
+});
+
+
 
 test('match index', t => {
 	const out = $.match('/', all);
