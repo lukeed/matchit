@@ -115,3 +115,45 @@ test('match static (slash-vs-bare)', t => {
 	t.is(foo, 'contact', 'returns the pattern value');
 	t.end();
 });
+
+test('match static (trailing slash)', t => {
+	const foo = $.match('/books/', PREP);
+	t.is(typeof foo, 'string', 'returns a string');
+	t.is(foo, '/books', 'returns the pattern value');
+	t.end();
+});
+
+test('match params (single)', t => {
+	const foo = $.match('/books/foobar', PREP);
+	t.is(typeof foo, 'string', 'returns a string');
+	t.is(foo, '/books/:title', 'returns the pattern value');
+	t.end();
+});
+
+test('match params (no match, long)', t => {
+	const foo = $.match('/books/foo/bar', PREP);
+	t.is(typeof foo, 'string', 'returns a string');
+	t.is(foo, '', 'returns empty value');
+	t.end();
+});
+
+test('match params (no match, base)', t => {
+	const foo = $.match('/hello/world', PREP);
+	t.is(typeof foo, 'string', 'returns a string');
+	t.is(foo, '', 'returns empty value');
+	t.end();
+});
+
+test('match wildcard (simple)', t => {
+	const foo = $.match('/foo/bar', PREP);
+	t.is(typeof foo, 'string', 'returns a string');
+	t.is(foo, '/foo/*', 'returns the pattern value');
+	t.end();
+});
+
+test('match wildcard (multi-level)', t => {
+	const foo = $.match('/foo/bar/baz', PREP);
+	t.is(typeof foo, 'string', 'returns a string');
+	t.is(foo, '/foo/*', 'returns the pattern value');
+	t.end();
+});
