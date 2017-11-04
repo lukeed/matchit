@@ -1,7 +1,8 @@
 const test = require('tape');
 const $ = require('../lib');
 
-const all = ['/', '/about', 'contact', '/books', '/books/*', '/books/:title'];
+const ALL = ['/', '/about', 'contact', '/books', '/books/:title', '/foo/*'];
+const PREP = $.parse(ALL);
 
 function isEntry(t, segs, expect) {
 	t.true(Array.isArray(segs), '~> entry is an array of segments');
@@ -84,32 +85,32 @@ test('parse wilds', t => {
 
 
 test('match index', t => {
-	const out = $.match('/', all);
+	const out = $.match('/', PREP);
 	t.is(typeof out, 'string', 'returns a string');
 	t.is(out, '/', 'returns the pattern value');
 	t.end();
 });
 
 test('match static (exact)', t => {
-	const foo = $.match('/about', all);
+	const foo = $.match('/about', PREP);
 	t.is(typeof foo, 'string', 'returns a string');
 	t.is(foo, '/about', 'returns the pattern value');
 
-	const bar = $.match('contact', all);
+	const bar = $.match('contact', PREP);
 	t.is(typeof bar, 'string', 'returns a string');
 	t.is(bar, 'contact', 'returns the pattern value');
 	t.end();
 });
 
 test('match static (bare-vs-slash)', t => {
-	const foo = $.match('about', all);
+	const foo = $.match('about', PREP);
 	t.is(typeof foo, 'string', 'returns a string');
 	t.is(foo, '/about', 'returns the pattern value');
 	t.end();
 });
 
 test('match static (slash-vs-bare)', t => {
-	const foo = $.match('/contact', all);
+	const foo = $.match('/contact', PREP);
 	t.is(typeof foo, 'string', 'returns a string');
 	t.is(foo, 'contact', 'returns the pattern value');
 	t.end();
