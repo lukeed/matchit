@@ -8,7 +8,7 @@ function isEntry(t, segs, expect) {
 	t.is(segs.length, expect.length, `~> entry has ${expect.length} segment(s)`)
 
 	segs.forEach((obj, idx) => {
-		t.is(Object.keys(obj).length, 2, '~~> segment has `type` & `val` keys');
+		t.is(Object.keys(obj).length, 3, '~~> segment has `old`, `type` & `val` keys');
 		t.is(typeof obj.type, 'number', '~~> segment.type is a number');
 		t.is(obj.type, expect[idx].type, '~~> segment.type returns expected value');
 		t.is(typeof obj.val, 'string', '~~> segment.val is a string');
