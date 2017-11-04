@@ -17,7 +17,26 @@ new Suite()
 	.on('complete', onComplete)
 	.run();
 
-// new Suite()
+new Suite()
+	.add('matchit.match (index)', _ => curr.match('/', data.matchit))
+	.add('path-to-regexp.exec (index)', _ => data.pathRegex.filter(rgx => rgx.exec('/')))
+	.on('cycle', e => console.log(String(e.target)))
+	.on('complete', onComplete)
+	.run();
+
+new Suite()
+	.add('matchit.match (param)', _ => curr.match('/books/foo', data.matchit))
+	.add('path-to-regexp.exec (param)', _ => data.pathRegex.filter(rgx => rgx.exec('/books/foo')))
+	.on('cycle', e => console.log(String(e.target)))
+	.on('complete', onComplete)
+	.run();
+
+new Suite()
+	.add('matchit.match (wilcard)', _ => curr.match('/foo/bar', data.matchit))
+	.add('path-to-regexp.exec (wilcard)', _ => data.pathRegex.filter(rgx => rgx.exec('/foo/bar')))
+	.on('cycle', e => console.log(String(e.target)))
+	.on('complete', onComplete)
+	.run();
 
 
 function onComplete() {
