@@ -80,19 +80,19 @@ path-to-regexp
   --> 87,469 ops/sec ±0.71% (92 runs sampled)
 
 matchit.match (index)
-  --> 6,167,110 ops/sec ±0.75% (90 runs sampled)
+  --> 5,967,166 ops/sec ±0.95% (90 runs sampled)
 path-to-regexp.exec (index)
-  --> 1,101,193 ops/sec ±0.47% (94 runs sampled)
+  --> 1,036,087 ops/sec ±0.83% (90 runs sampled)
 
 matchit.match (param)
-  --> 2,266,856 ops/sec ±0.60% (89 runs sampled)
+  --> 2,257,568 ops/sec ±0.47% (93 runs sampled)
 path-to-regexp.exec (param)
-  --> 1,062,564 ops/sec ±0.60% (88 runs sampled)
+  --> 1,012,662 ops/sec ±0.65% (90 runs sampled)
 
 matchit.match (wilcard)
-  --> 2,097,308 ops/sec ±0.82% (89 runs sampled)
+  --> 2,168,048 ops/sec ±0.72% (92 runs sampled)
 path-to-regexp.exec (wilcard)
-  --> 2,076,807 ops/sec ±0.57% (92 runs sampled)
+  --> 1,995,711 ops/sec ±0.70% (92 runs sampled
 ```
 
 ## License
