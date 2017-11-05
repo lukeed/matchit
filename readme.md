@@ -30,6 +30,9 @@ match('/baz', info);
 
 match('/baz/hello', info);
 //=> '/baz/:title'
+
+match('/bat/quz/qut', info);
+//=> '/bat/*'
 ```
 
 
