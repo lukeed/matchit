@@ -65,7 +65,7 @@ The `url` you want to be matched.
 
 Type: `Array`
 
-The "parsed" output from [`matchit.parse`](#matchitparse).
+The "parsed" output from [`matchit.parse`](#matchitparseitems).
 
 
 ## Benchmarks
