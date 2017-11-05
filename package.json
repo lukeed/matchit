@@ -14,7 +14,7 @@
     "url": "lukeed.com"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "scripts": {
     "bench": "node bench",
