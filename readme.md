@@ -14,28 +14,37 @@ $ npm install --save matchit
 ```js
 const { exec, match, parse } = require('matchit');
 
+parse('/foo/:bar');
+//=> [
+//=>   { old:'/foo/:bar', type:0, val:'foo' },
+//=>   { old:'/foo/:bar', type:1, val:'bar' }
+//=> ]
+
 const routes = ['/', '/foo', 'bar', '/baz', '/baz/:title','/bat/*'].map(parse);
 
 match('/', routes);
-//=> '/'
+//=> [{ old:'/', type:0, val:'/' }]
 
 match('/foo', routes);
-//=> '/foo'
+//=> [{ old:'/foo', type:0, val:'foo' }]
 
 match('/bar', routes);
-//=> 'bar'
+//=> [{ old:'bar', type:0, val:'bar' }]
 
 match('/baz', routes);
-//=> '/baz'
+//=> [{ old:'/baz', type:0, val:'baz' }]
 
 let a = match('/baz/hello', routes);
-//=> '/baz/:title'
-let b = ('/baz/hello', a);
+//=> [{...}, {...}]
+let b = exec('/baz/hello', a);
 //=> b.params ~> { title:'hello' }
 //=> typeof b.handler ~> 'function'
 
 match('/bat/quz/qut', routes);
-//=> '/bat/*'
+//=> [
+//=>   { old:'/bat/*', type:0, val:'bat' },
+//=>   { old:'/bat/*', type:2, val:'*' }
+//=> ]
 ```
 
 
@@ -45,7 +54,14 @@ match('/bat/quz/qut', routes);
 
 Returns: `Array`
 
-Every URL inside `items` will be `split` into an array of segments. This means that the function returns an `Array` of arrays.
+The `route` is `split` and parsed into a "definition" array of objects. Each object ("segment") contains a `val`, `type`, and `old` key:
+
+* `old` &mdash; The [`route`](#route)'s original value
+* `type` &mdash; An numerical representation of the segment type.
+    * `0` - static
+    * `1` - parameter
+    * `2` - any/wildcard
+* `val` &mdash; The current segment's value. This is either a static value of the name of a parameter
 
 #### route
 
@@ -58,9 +74,9 @@ A single URL pattern.
 
 ### matchit.match(url, routes)
 
-Returns: `String`
+Returns: `Array`
 
-Returns the original URL pattern used to describe the url.
+Returns the [`route`](#route)'s encoded definition. See [`matchit.parse`](#matchitparseroute).
 
 #### url
 
@@ -72,7 +88,7 @@ The true URL you want to be matched.
 
 Type: `Array`
 
-_All_ "parsed" route definitions, via [`matchit.parse`](#matchitparseitems).
+_All_ "parsed" route definitions, via [`matchit.parse`](#matchitparseroute).
 
 > **Important:** Multiple routes will require an Array of `matchit.parse` outputs.
 
