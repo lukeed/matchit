@@ -8,7 +8,7 @@ const routes = ['/', '/about', 'books', '/books/:title', '/foo/*'];
 
 new Suite()
 	.add('matchit.parse', _ => {
-		data.matchit = curr.parse(routes);
+		data.matchit = routes.map(curr.parse);
 	})
 	.add('path-to-regexp', _ => {
 		data.pathRegex = routes.map(x => pathRegex(x));
@@ -32,8 +32,8 @@ new Suite()
 	.run();
 
 new Suite()
-	.add('matchit.match (wilcard)', _ => curr.match('/foo/bar', data.matchit))
-	.add('path-to-regexp.exec (wilcard)', _ => data.pathRegex.filter(rgx => rgx.exec('/foo/bar')))
+	.add('matchit.match (wildcard)', _ => curr.match('/foo/bar', data.matchit))
+	.add('path-to-regexp.exec (wildcard)', _ => data.pathRegex.filter(rgx => rgx.exec('/foo/bar')))
 	.on('cycle', e => console.log(String(e.target)))
 	.on('complete', onComplete)
 	.run();
