@@ -2,7 +2,18 @@ const test = require('tape');
 const $ = require('../lib');
 
 const ALL = ['/', '/about', 'contact', '/books', '/books/:title', '/foo/*'];
-const PREP = $.parse(ALL);
+const PREP = ALL.map($.parse);
+
+function toMatch(t, url, idx) {
+	const out = $.match(url, PREP);
+	t.true(Array.isArray(out), 'returns an array');
+	if (idx !== -1) {
+		t.deepEqual(out, PREP[idx], 'returns the expected definition');
+	} else {
+		t.is(out.length, 0, 'returns an empty array');
+	}
+	t.end();
+}
 
 function isEntry(t, segs, expect) {
 	t.true(Array.isArray(segs), '~> entry is an array of segments');
@@ -18,7 +29,7 @@ function isEntry(t, segs, expect) {
 }
 
 function toParse(t, ins, outs) {
-	const res = $.parse(ins);
+	const res = ins.map($.parse);
 
 	t.true(Array.isArray(res), 'returns an array');
 	t.is(res.length, ins.length, `returns ${ins.length} item(s)`);
@@ -33,7 +44,7 @@ function toParse(t, ins, outs) {
 test('matchit', t => {
 	t.is(typeof $, 'object', 'exports an object');
 	const keys = Object.keys($);
-	t.is(keys.length, 2, 'exports two items');
+	t.is(keys.length, 3, 'exports two items');
 	keys.forEach(k => {
 		t.is(typeof $[k], 'function', `exports.${k} is a function`);
 	});
@@ -41,7 +52,7 @@ test('matchit', t => {
 });
 
 test('parse empty', t => {
-	const out = $.parse([]);
+	const out = $.parse('');
 	t.true(Array.isArray(out), 'returns an array');
 	t.is(out.length, 0, 'returns an empty array');
 	t.end();
@@ -83,77 +94,46 @@ test('parse wilds', t => {
 });
 
 
-
 test('match index', t => {
-	const out = $.match('/', PREP);
-	t.is(typeof out, 'string', 'returns a string');
-	t.is(out, '/', 'returns the pattern value');
-	t.end();
+	toMatch(t, '/', 0);
 });
 
 test('match static (exact)', t => {
-	const foo = $.match('/about', PREP);
-	t.is(typeof foo, 'string', 'returns a string');
-	t.is(foo, '/about', 'returns the pattern value');
+	toMatch(t, '/about', 1);
+});
 
-	const bar = $.match('contact', PREP);
-	t.is(typeof bar, 'string', 'returns a string');
-	t.is(bar, 'contact', 'returns the pattern value');
-	t.end();
+test('match static (exact, no-slash)', t => {
+	toMatch(t, 'contact', 2);
 });
 
 test('match static (bare-vs-slash)', t => {
-	const foo = $.match('about', PREP);
-	t.is(typeof foo, 'string', 'returns a string');
-	t.is(foo, '/about', 'returns the pattern value');
-	t.end();
+	toMatch(t, 'about', 1);
 });
 
 test('match static (slash-vs-bare)', t => {
-	const foo = $.match('/contact', PREP);
-	t.is(typeof foo, 'string', 'returns a string');
-	t.is(foo, 'contact', 'returns the pattern value');
-	t.end();
+	toMatch(t, '/contact', 2);
 });
 
 test('match static (trailing slash)', t => {
-	const foo = $.match('/books/', PREP);
-	t.is(typeof foo, 'string', 'returns a string');
-	t.is(foo, '/books', 'returns the pattern value');
-	t.end();
+	toMatch(t, '/books/', 3);
 });
 
 test('match params (single)', t => {
-	const foo = $.match('/books/foobar', PREP);
-	t.is(typeof foo, 'string', 'returns a string');
-	t.is(foo, '/books/:title', 'returns the pattern value');
-	t.end();
+	toMatch(t, '/books/foobar', 4);
 });
 
 test('match params (no match, long)', t => {
-	const foo = $.match('/books/foo/bar', PREP);
-	t.is(typeof foo, 'string', 'returns a string');
-	t.is(foo, '', 'returns empty value');
-	t.end();
+	toMatch(t, '/books/foo/bar', -1);
 });
 
 test('match params (no match, base)', t => {
-	const foo = $.match('/hello/world', PREP);
-	t.is(typeof foo, 'string', 'returns a string');
-	t.is(foo, '', 'returns empty value');
-	t.end();
+	toMatch(t, '/hello/world', -1);
 });
 
 test('match wildcard (simple)', t => {
-	const foo = $.match('/foo/bar', PREP);
-	t.is(typeof foo, 'string', 'returns a string');
-	t.is(foo, '/foo/*', 'returns the pattern value');
-	t.end();
+	toMatch(t, '/foo/bar', 5);
 });
 
 test('match wildcard (multi-level)', t => {
-	const foo = $.match('/foo/bar/baz', PREP);
-	t.is(typeof foo, 'string', 'returns a string');
-	t.is(foo, '/foo/*', 'returns the pattern value');
-	t.end();
+	toMatch(t, '/foo/bar/baz', 5);
 });
