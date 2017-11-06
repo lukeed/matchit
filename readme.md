@@ -14,45 +14,46 @@ $ npm install --save matchit
 ```js
 const { match, parse } = require('matchit');
 
-const info = parse(['/', '/foo', 'bar', '/baz', '/baz/:title','/bat/*']);
+const routes = ['/', '/foo', 'bar', '/baz', '/baz/:title','/bat/*'].map(parse);
 
-match('/', info);
+match('/', routes);
 //=> '/'
 
-match('/foo', info);
+match('/foo', routes);
 //=> '/foo'
 
-match('/bar', info);
+match('/bar', routes);
 //=> 'bar'
 
-match('/baz', info);
+match('/baz', routes);
 //=> '/baz'
 
 match('/baz/hello', info);
 //=> '/baz/:title'
 
-match('/bat/quz/qut', info);
+match('/bat/quz/qut', routes);
 //=> '/bat/*'
 ```
 
 
 ## API
 
-### matchit.parse(items)
+### matchit.parse(route)
 
 Returns: `Array`
 
 Every URL inside `items` will be `split` into an array of segments. This means that the function returns an `Array` of arrays.
 
-#### items
+#### route
 
-Type: `Array`
+Type: `String`
 
-An array of URL strings.
+A single URL pattern.
 
-> **Note:** Each URL will be stripped of all leading & trailing `/` characters, so there's no need to normalize your own URLs before passing it to `parse`!
+> **Note:** Input will be stripped of all leading & trailing `/` characters, so there's no need to normalize your own URLs before passing it to `parse`!
 
-### matchit.match(url, parsed)
+
+### matchit.match(url, routes)
 
 Returns: `String`
 
@@ -62,13 +63,15 @@ Returns the original URL pattern used to describe the url.
 
 Type: `String`
 
-The `url` you want to be matched.
+The true URL you want to be matched.
 
-#### parsed
+#### routes
 
 Type: `Array`
 
-The "parsed" output from [`matchit.parse`](#matchitparseitems).
+_All_ "parsed" route definitions, via [`matchit.parse`](#matchitparseitems).
+
+> **Important:** Multiple routes will require an Array of `matchit.parse` outputs.
 
 
 ## Benchmarks
