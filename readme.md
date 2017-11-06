@@ -12,7 +12,7 @@ $ npm install --save matchit
 ## Usage
 
 ```js
-const { match, parse } = require('matchit');
+const { exec, match, parse } = require('matchit');
 
 const routes = ['/', '/foo', 'bar', '/baz', '/baz/:title','/bat/*'].map(parse);
 
@@ -28,8 +28,11 @@ match('/bar', routes);
 match('/baz', routes);
 //=> '/baz'
 
-match('/baz/hello', info);
+let a = match('/baz/hello', routes);
 //=> '/baz/:title'
+let b = ('/baz/hello', a);
+//=> b.params ~> { title:'hello' }
+//=> typeof b.handler ~> 'function'
 
 match('/bat/quz/qut', routes);
 //=> '/bat/*'
@@ -72,6 +75,27 @@ Type: `Array`
 _All_ "parsed" route definitions, via [`matchit.parse`](#matchitparseitems).
 
 > **Important:** Multiple routes will require an Array of `matchit.parse` outputs.
+
+
+### matchit.exec(url, match)
+
+Returns: `Object`
+
+Returns an object with `params` and `handler` key.
+
+The `params` is an object of `key:val` pairs, as defined by your [`route`](#route) pattern.
+
+#### url
+
+Type: `String`
+
+The true URL to evaluate.
+
+#### match
+
+Type: `Array`
+
+The route definition to use, via [`matchit.match`](#matchitmatchurl-routes).
 
 
 ## Benchmarks
