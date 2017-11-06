@@ -83,6 +83,15 @@ test('parse params', t => {
 	]);
 });
 
+test('parse params (multiple)', t => {
+	const input = ['/foo/:bar/:baz', '/foo/bar/:baz', '/foo/bar/:baz/:bat'];
+	toParse(t, input, [
+		[{ type:0, val:'foo' }, { type:1, val:'bar' }, { type:1, val:'baz' }],
+		[{ type:0, val:'foo' }, { type:0, val:'bar' }, { type:1, val:'baz' }],
+		[{ type:0, val:'foo' }, { type:0, val:'bar' }, { type:1, val:'baz' }, { type:1, val:'bat' }]
+	]);
+});
+
 test('parse wilds', t => {
 	const input = ['*', '/*', 'foo/*', 'foo/bar/*'];
 	toParse(t, input, [
