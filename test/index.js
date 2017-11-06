@@ -146,3 +146,56 @@ test('match wildcard (simple)', t => {
 test('match wildcard (multi-level)', t => {
 	toMatch(t, '/foo/bar/baz', 5);
 });
+
+
+
+test('exec index', t => {
+	const arr = $.match('/', PREP);
+	const out = $.exec('/', arr);
+	t.is(typeof out, 'object', 'returns an object');
+	t.is(Object.keys(out).length, 0, 'returns an empty object');
+	t.end();
+});
+
+test('exec statics', t => {
+	const foo = $.match('/about', PREP);
+	const bar = $.exec('/about', foo);
+	t.is(typeof bar, 'object', 'returns an object');
+	t.is(Object.keys(bar).length, 0, 'returns an empty object');
+
+	const baz = $.match('/contact', PREP);
+	const bat = $.exec('/contact', baz);
+	t.is(typeof bat, 'object', 'returns an object');
+	t.is(Object.keys(bat).length, 0, 'returns an empty object');
+	t.end();
+});
+
+test('exec params', t => {
+	const arr = $.match('/books/foo', PREP);
+	const out = $.exec('/books/foo', arr);
+	t.is(typeof out, 'object', 'returns an object');
+	const keys = Object.keys(out);
+	t.is(keys.length, 1, 'returns object with 1 key');
+	t.is(keys[0], 'title', '~> contains `title` key');
+	t.is(out.title, 'foo', '~> adds `key:val` pair');
+	t.end();
+});
+
+test('exec params (multiple)', t => {
+	const foo = $.parse('/foo/:bar/:baz');
+	const out = $.exec('/foo/hello/world', foo);
+	t.is(typeof out, 'object', 'returns an object');
+	const keys = Object.keys(out);
+	t.is(keys.length, 2, 'returns object with 2 keys');
+	t.deepEqual(keys, ['bar', 'baz'], '~> contains `bar` & `baz` keys');
+	t.is(out.bar, 'hello', '~> adds `key:val` pair');
+	t.is(out.baz, 'world', '~> adds `key:val` pair');
+	t.end();
+});
+
+test('exec empty (no match)', t => {
+	const out = $.exec('foo', PREP[0]);
+	t.is(typeof out, 'object', 'returns an object');
+	t.is(Object.keys(out).length, 0, 'returns an empty object');
+	t.end();
+});
