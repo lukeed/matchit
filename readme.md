@@ -119,24 +119,29 @@ The route definition to use, via [`matchit.match`](#matchitmatchurl-routes).
 
 ```
 matchit.parse
-  --> 436,157 ops/sec ±0.37% (95 runs sampled)
+  --> 325,683 ops/sec ±0.39% (94 runs sampled)
 path-to-regexp
-  --> 85,985 ops/sec ±0.52% (96 runs sampled)
+  --> 66,823 ops/sec ±0.55% (92 runs sampled)
 
 matchit.match (index)
-  --> 6,077,103 ops/sec ±0.76% (91 runs sampled)
+  --> 5,344,767 ops/sec ±0.71% (92 runs sampled)
 path-to-regexp.exec (index)
-  --> 1,111,688 ops/sec ±0.71% (92 runs sampled)
+  --> 1,000,534 ops/sec ±0.76% (91 runs sampled)
 
 matchit.match (param)
-  --> 2,216,572 ops/sec ±0.58% (93 runs sampled)
+  --> 1,904,755 ops/sec ±0.74% (92 runs sampled)
 path-to-regexp.exec (param)
-  --> 1,048,625 ops/sec ±0.63% (91 runs sampled)
+  --> 895,968 ops/sec ±0.67% (90 runs sampled)
+
+matchit.match (optional)
+  --> 2,036,865 ops/sec ±0.70% (90 runs sampled)
+path-to-regexp.exec (optional)
+  --> 1,766,485 ops/sec ±0.70% (89 runs sampled)
 
 matchit.match (wildcard)
-  --> 2,140,698 ops/sec ±0.73% (90 runs sampled)
+  --> 1,942,629 ops/sec ±0.83% (91 runs sampled)
 path-to-regexp.exec (wildcard)
-  --> 2,044,279 ops/sec ±0.49% (94 runs sampled)
+  --> 1,766,290 ops/sec ±0.99% (90 runs sampled)
 ```
 
 ## License

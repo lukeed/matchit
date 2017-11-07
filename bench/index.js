@@ -4,7 +4,7 @@ const pathRegex = require('path-to-regexp');
 const curr = require('../lib');
 
 const data = {};
-const routes = ['/', '/about', 'books', '/books/:title', '/foo/*'];
+const routes = ['/', '/about', 'books', '/books/:title', '/foo/*', '/bar/:baz/:bat?'];
 
 new Suite()
 	.add('matchit.parse', _ => {
@@ -25,8 +25,15 @@ new Suite()
 	.run();
 
 new Suite()
-	.add('matchit.match (param)', _ => curr.match('/books/foo', data.matchit))
-	.add('path-to-regexp.exec (param)', _ => data.pathRegex.filter(rgx => rgx.exec('/books/foo')))
+	.add('matchit.match (param)', _ => curr.match('/bar/hello/world', data.matchit))
+	.add('path-to-regexp.exec (param)', _ => data.pathRegex.filter(rgx => rgx.exec('/bar/hello/world')))
+	.on('cycle', e => console.log(String(e.target)))
+	.on('complete', onComplete)
+	.run();
+
+new Suite()
+	.add('matchit.match (optional)', _ => curr.match('/foo/bar', data.matchit))
+	.add('path-to-regexp.exec (optional)', _ => data.pathRegex.filter(rgx => rgx.exec('/foo/bar')))
 	.on('cycle', e => console.log(String(e.target)))
 	.on('complete', onComplete)
 	.run();
@@ -37,6 +44,7 @@ new Suite()
 	.on('cycle', e => console.log(String(e.target)))
 	.on('complete', onComplete)
 	.run();
+
 
 
 function onComplete() {
