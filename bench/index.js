@@ -60,7 +60,37 @@ new Suite()
 	.on('complete', onComplete)
 	.run();
 
+function matchitParams(uri) {
+	let arr = curr.match(uri, data.matchit);
+	return curr.exec(uri, arr);
+}
 
+function pathRegexParams(uri) {
+	let i=0, j, tmp, tokens, obj={};
+	let regex = data.ptokens.map(x => pathRegex.tokensToRegExp(x));
+
+	for (; i < regex.length; i++) {
+		tmp = regex[i].exec(uri);
+
+		if (tmp && tmp.length > 0) {
+			tokens = data.ptokens[i];
+			for (j=0; j < tokens.length; j++) {
+				if (typeof tokens[j] === 'object') {
+					obj[ tokens[j].name ] = tmp[j];
+				}
+			}
+			return obj;
+		}
+	}
+	return obj;
+}
+
+new Suite()
+	.add('matchit.exec (params)', _ => matchitParams('/books/foobar'))
+	.add('path-to-regexp.exec (params)', _ => pathRegexParams('/books/foobar'))
+	.on('cycle', e => console.log(String(e.target)))
+	.on('complete', onComplete)
+	.run();
 
 function onComplete() {
 	console.log('Fastest is ' + this.filter('fastest').map('name'));
