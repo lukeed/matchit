@@ -1,7 +1,7 @@
 const test = require('tape');
 const $ = require('../lib');
 
-const ALL = ['/', '/about', 'contact', '/books', '/books/:title', '/foo/*'];
+const ALL = ['/', '/about', 'contact', '/books', '/books/:title', '/foo/*', 'bar/:baz/:bat?'];
 const PREP = ALL.map($.parse);
 
 function toMatch(t, url, idx) {
@@ -92,6 +92,15 @@ test('parse params (multiple)', t => {
 	]);
 });
 
+test('parse params (optional)', t => {
+	const input = ['/:foo?', 'foo/:bar?', '/foo/:bar?/:baz?'];
+	toParse(t, input, [
+		[{ type:3, val:'foo' }],
+		[{ type:0, val:'foo' }, { type:3, val:'bar' }],
+		[{ type:0, val:'foo' }, { type:3, val:'bar' }, { type:3, val:'baz' }],
+	]);
+});
+
 test('parse wilds', t => {
 	const input = ['*', '/*', 'foo/*', 'foo/bar/*'];
 	toParse(t, input, [
@@ -137,6 +146,14 @@ test('match params (no match, long)', t => {
 
 test('match params (no match, base)', t => {
 	toMatch(t, '/hello/world', -1);
+});
+
+test('match params (optional)', t => {
+	toMatch(t, '/bar/hello', 6);
+});
+
+test('match params (optional, all)', t => {
+	toMatch(t, '/bar/hello/world', 6);
 });
 
 test('match wildcard (simple)', t => {
@@ -190,6 +207,27 @@ test('exec params (multiple)', t => {
 	t.deepEqual(keys, ['bar', 'baz'], '~> contains `bar` & `baz` keys');
 	t.is(out.bar, 'hello', '~> adds `key:val` pair');
 	t.is(out.baz, 'world', '~> adds `key:val` pair');
+	t.end();
+});
+
+test('exec params (optional)', t => {
+	const out = $.exec('/bar/hello', PREP[6]);
+	t.is(typeof out, 'object', 'returns an object');
+	const keys = Object.keys(out);
+	t.is(keys.length, 1, 'returns object with 2 keys');
+	t.is(keys[0], 'baz', '~> contains `baz` key');
+	t.is(out.baz, 'hello', '~> adds `key:val` pair');
+	t.end();
+});
+
+test('exec params (optional, all)', t => {
+	const out = $.exec('/bar/hello/world', PREP[6]);
+	t.is(typeof out, 'object', 'returns an object');
+	const keys = Object.keys(out);
+	t.is(keys.length, 2, 'returns object with 2 keys');
+	t.deepEqual(keys, ['baz', 'bat'], '~> contains `baz` & `bat` keys');
+	t.is(out.baz, 'hello', '~> adds `key:val` pair');
+	t.is(out.bat, 'world', '~> adds `key:val` pair');
 	t.end();
 });
 
