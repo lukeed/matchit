@@ -14,10 +14,11 @@ $ npm install --save matchit
 ```js
 const { exec, match, parse } = require('matchit');
 
-parse('/foo/:bar');
+parse('/foo/:bar/:baz?');
 //=> [
 //=>   { old:'/foo/:bar', type:0, val:'foo' },
-//=>   { old:'/foo/:bar', type:1, val:'bar' }
+//=>   { old:'/foo/:bar', type:1, val:'bar' },
+//=>   { old:'/foo/:bar', type:3, val:'baz' }
 //=> ]
 
 const routes = ['/', '/foo', 'bar', '/baz', '/baz/:title','/bat/*'].map(parse);
