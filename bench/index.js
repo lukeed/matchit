@@ -11,7 +11,10 @@ new Suite()
 		data.matchit = routes.map(curr.parse);
 	})
 	.add('path-to-regexp', _ => {
-		data.pathRegex = routes.map(x => pathRegex(x));
+		data.pregex = routes.map(x => pathRegex(x));
+	})
+	.add('path-to-regexp.parse', _ => {
+		data.ptokens = routes.map(pathRegex.parse);
 	})
 	.on('cycle', e => console.log(String(e.target)))
 	.on('complete', onComplete)
@@ -19,28 +22,40 @@ new Suite()
 
 new Suite()
 	.add('matchit.match (index)', _ => curr.match('/', data.matchit))
-	.add('path-to-regexp.exec (index)', _ => data.pathRegex.filter(rgx => rgx.exec('/')))
+	.add('path-to-regexp.exec (index)', _ => data.pregex.filter(rgx => rgx.exec('/')))
+	.add('path-to-regexp.tokens (index)', _ => {
+		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/'));
+	})
 	.on('cycle', e => console.log(String(e.target)))
 	.on('complete', onComplete)
 	.run();
 
 new Suite()
 	.add('matchit.match (param)', _ => curr.match('/bar/hello/world', data.matchit))
-	.add('path-to-regexp.exec (param)', _ => data.pathRegex.filter(rgx => rgx.exec('/bar/hello/world')))
+	.add('path-to-regexp.exec (param)', _ => data.pregex.filter(rgx => rgx.exec('/bar/hello/world')))
+	.add('path-to-regexp.tokens (param)', _ => {
+		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/bar/hello/world'));
+	})
 	.on('cycle', e => console.log(String(e.target)))
 	.on('complete', onComplete)
 	.run();
 
 new Suite()
 	.add('matchit.match (optional)', _ => curr.match('/foo/bar', data.matchit))
-	.add('path-to-regexp.exec (optional)', _ => data.pathRegex.filter(rgx => rgx.exec('/foo/bar')))
+	.add('path-to-regexp.exec (optional)', _ => data.pregex.filter(rgx => rgx.exec('/foo/bar')))
+	.add('path-to-regexp.tokens (optional)', _ => {
+		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/foo/bar'));
+	})
 	.on('cycle', e => console.log(String(e.target)))
 	.on('complete', onComplete)
 	.run();
 
 new Suite()
 	.add('matchit.match (wildcard)', _ => curr.match('/foo/bar', data.matchit))
-	.add('path-to-regexp.exec (wildcard)', _ => data.pathRegex.filter(rgx => rgx.exec('/foo/bar')))
+	.add('path-to-regexp.exec (wildcard)', _ => data.pregex.filter(rgx => rgx.exec('/foo/bar')))
+	.add('path-to-regexp.tokens (wildcard)', _ => {
+		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/foo/bar'));
+	})
 	.on('cycle', e => console.log(String(e.target)))
 	.on('complete', onComplete)
 	.run();
