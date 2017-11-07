@@ -120,29 +120,44 @@ The route definition to use, via [`matchit.match`](#matchitmatchurl-routes).
 
 ```
 matchit.parse
-  --> 325,683 ops/sec ±0.39% (94 runs sampled)
+  --> 307,336 ops/sec ±0.52% (93 runs sampled)
 path-to-regexp
-  --> 66,823 ops/sec ±0.55% (92 runs sampled)
+  --> 61,995 ops/sec ±0.71% (91 runs sampled)
+path-to-regexp.parse
+  --> 211,109 ops/sec ±0.63% (92 runs sampled)
 
 matchit.match (index)
-  --> 5,344,767 ops/sec ±0.71% (92 runs sampled)
+  --> 5,197,884 ops/sec ±0.57% (95 runs sampled)
 path-to-regexp.exec (index)
-  --> 1,000,534 ops/sec ±0.76% (91 runs sampled)
+  --> 925,370 ops/sec ±0.55% (91 runs sampled)
+path-to-regexp.tokens (index)
+  --> 69,317 ops/sec ±0.48% (94 runs sampled)
 
 matchit.match (param)
-  --> 1,904,755 ops/sec ±0.74% (92 runs sampled)
+  --> 1,850,751 ops/sec ±0.87% (90 runs sampled)
 path-to-regexp.exec (param)
-  --> 895,968 ops/sec ±0.67% (90 runs sampled)
+  --> 818,080 ops/sec ±0.64% (94 runs sampled)
+path-to-regexp.tokens (param)
+  --> 68,879 ops/sec ±0.48% (94 runs sampled)
 
 matchit.match (optional)
-  --> 2,036,865 ops/sec ±0.70% (90 runs sampled)
+  --> 2,051,647 ops/sec ±0.87% (90 runs sampled)
 path-to-regexp.exec (optional)
-  --> 1,766,485 ops/sec ±0.70% (89 runs sampled)
+  --> 1,597,584 ops/sec ±0.67% (92 runs sampled)
+path-to-regexp.tokens (optional)
+  --> 72,507 ops/sec ±0.50% (96 runs sampled)
 
 matchit.match (wildcard)
-  --> 1,942,629 ops/sec ±0.83% (91 runs sampled)
+  --> 2,040,094 ops/sec ±0.80% (88 runs sampled)
 path-to-regexp.exec (wildcard)
-  --> 1,766,290 ops/sec ±0.99% (90 runs sampled)
+  --> 1,588,553 ops/sec ±0.81% (93 runs sampled)
+path-to-regexp.tokens (wildcard)
+  --> 71,419 ops/sec ±0.50% (91 runs sampled)
+
+matchit.exec (params)
+  --> 1,015,649 ops/sec ±0.73% (87 runs sampled)
+path-to-regexp.exec (params)
+  --> 72,230 ops/sec ±0.56% (95 runs sampled)
 ```
 
 ## License
