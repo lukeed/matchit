@@ -61,6 +61,7 @@ The `route` is `split` and parsed into a "definition" array of objects. Each obj
     * `0` - static
     * `1` - parameter
     * `2` - any/wildcard
+    * `3` - optional param
 * `val` &mdash; The current segment's value. This is either a static value of the name of a parameter
 
 #### route
