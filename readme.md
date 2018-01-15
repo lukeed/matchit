@@ -107,7 +107,9 @@ The `params` is an object of `key:val` pairs, as defined by your [`route`](#rout
 
 Type: `String`
 
-The true URL to evaluate.
+The URL (`pathname`) to evaluate.
+
+> **Important:** This should be `pathname`s only as any `querystring`s will be included the response.
 
 #### match
 
