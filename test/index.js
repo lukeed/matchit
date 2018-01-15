@@ -156,6 +156,10 @@ test('match params (optional, all)', t => {
 	toMatch(t, '/bar/hello/world', 6);
 });
 
+test('match params (querystring)', t => {
+	toMatch(t, '/books/narnia?author=lukeed', 4);
+});
+
 test('match wildcard (simple)', t => {
 	toMatch(t, '/foo/bar', 5);
 });
@@ -228,6 +232,18 @@ test('exec params (optional, all)', t => {
 	t.deepEqual(keys, ['baz', 'bat'], '~> contains `baz` & `bat` keys');
 	t.is(out.baz, 'hello', '~> adds `key:val` pair');
 	t.is(out.bat, 'world', '~> adds `key:val` pair');
+	t.end();
+});
+
+test('exec params (querystring)', t => {
+	const url = '/books/foo?author=lukeed';
+	const arr = $.match(url, PREP);
+	const out = $.exec(url, arr);
+	t.is(typeof out, 'object', 'returns an object');
+	const keys = Object.keys(out);
+	t.is(keys.length, 1, 'returns object with 1 key');
+	t.is(keys[0], 'title', '~> contains `title` key');
+	t.is(out.title, 'foo?author=lukeed', 'does NOT separate querystring from path');
 	t.end();
 });
 
