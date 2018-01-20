@@ -38,8 +38,7 @@ match('/baz', routes);
 let a = match('/baz/hello', routes);
 //=> [{...}, {...}]
 let b = exec('/baz/hello', a);
-//=> b.params ~> { title:'hello' }
-//=> typeof b.handler ~> 'function'
+//=> { title:'hello' }
 
 match('/bat/quz/qut', routes);
 //=> [
@@ -99,9 +98,7 @@ _All_ "parsed" route definitions, via [`matchit.parse`](#matchitparseroute).
 
 Returns: `Object`
 
-Returns an object with `params` and `handler` key.
-
-The `params` is an object of `key:val` pairs, as defined by your [`route`](#route) pattern.
+Returns an object an object of `key:val` pairs, as defined by your [`route`](#route) pattern.
 
 #### url
 
