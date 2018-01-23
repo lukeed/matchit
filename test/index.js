@@ -178,6 +178,23 @@ test('exec index', t => {
 	t.end();
 });
 
+test('exec index (optional)', t => {
+	const arr = $.parse('/:type?');
+	const foo = $.exec('/', arr);
+	const bar = $.exec('/news', arr);
+
+	t.is(typeof foo, 'object', 'returns an object');
+	t.same(foo, {}, 'returns empty object (no params)');
+
+	t.is(typeof bar, 'object', 'returns an object');
+	const keys = Object.keys(bar);
+	t.is(keys.length, 1, 'returns object with 1 key');
+	t.is(keys[0], 'type', '~> contains `type` key');
+	t.is(bar.type, 'news', '~> adds `key:val` pair');
+
+	t.end();
+});
+
 test('exec statics', t => {
 	const foo = $.match('/about', PREP);
 	const bar = $.exec('/about', foo);
