@@ -1,5 +1,5 @@
 const test = require('tape');
-const $ = require('../lib');
+const $ = require('../lib/matchit');
 
 const ALL = ['/', '/about', 'contact', '/books', '/books/:title', '/foo/*', 'bar/:baz/:bat?'];
 const PREP = ALL.map($.parse);
