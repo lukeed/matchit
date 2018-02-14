@@ -1,7 +1,7 @@
 'use strict';
 
-const every = require('@arr/every');
-const filter = require('@arr/filter');
+import every from '@arr/every';
+import filter from '@arr/filter';
 
 const SEP = '/';
 // Types ~> static, param, any, optional
@@ -24,7 +24,7 @@ function isMatch(str, obj) {
 	return (obj.val === str && obj.type === STYPE) || obj.type !== STYPE;
 }
 
-exports.match = function (str, all) {
+export function match(str, all) {
 	let segs=split(str), len=segs.length, l;
 
 	// filter by segment length
@@ -41,9 +41,9 @@ exports.match = function (str, all) {
 	}
 
 	return [];
-};
+}
 
-exports.parse = function (str) {
+export function parse(str) {
 	if (str === SEP) {
 		return [{ old:str, type:STYPE, val:str }];
 	}
@@ -98,9 +98,9 @@ exports.parse = function (str) {
 	}
 
 	return out;
-};
+}
 
-exports.exec = function (str, arr) {
+export function exec(str, arr) {
 	let i=0, x, y, segs=split(str), out={};
 	for (; i < arr.length; i++) {
 		x=segs[i]; y=arr[i];
@@ -110,4 +110,4 @@ exports.exec = function (str, arr) {
 		}
 	}
 	return out;
-};
+}
