@@ -1,9 +1,10 @@
 {
   "name": "matchit",
   "version": "1.0.1",
-  "description": "Quickly parse & match URLs",
   "repository": "lukeed/matchit",
-  "main": "lib/index.js",
+  "description": "Quickly parse & match URLs",
+  "module": "lib/matchit.es.js",
+  "main": "lib/matchit.js",
   "license": "MIT",
   "files": [
     "lib"
@@ -18,6 +19,8 @@
   },
   "scripts": {
     "bench": "node bench",
+    "build": "node builder",
+    "pretest": "npm run build",
     "test": "tape test/*.js | tap-spec"
   },
   "keywords": [
@@ -34,6 +37,8 @@
     "@arr/filter": "^1.0.0"
   },
   "devDependencies": {
+    "mk-dirs": "^1.0.0",
+    "rewrite-imports": "^1.0.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3"
   }
