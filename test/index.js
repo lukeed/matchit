@@ -148,6 +148,14 @@ test('match params (no match, base)', t => {
 	toMatch(t, '/hello/world', -1);
 });
 
+test('match params (index-vs-param)', t => {
+	let foo = $.match('/books', [$.parse('/books/:title')]);
+	t.same(foo, [], 'does not match index route with param-pattern');
+	let bar = $.match('/books/123', [$.parse('/books')]);
+	t.same(bar, [], 'does not match param-based route with index-pattern');
+	t.end();
+});
+
 test('match params (optional)', t => {
 	toMatch(t, '/bar/hello', 6);
 });
