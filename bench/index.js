@@ -1,7 +1,7 @@
 const Table = require('cli-table2');
 const { Suite } = require('benchmark');
 const pathRegex = require('path-to-regexp');
-const curr = require('../lib');
+const curr = require('../lib/matchit');
 
 const data = {};
 const routes = ['/', '/about', 'books', '/books/:title', '/foo/*', '/bar/:baz/:bat?'];
