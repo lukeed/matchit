@@ -148,6 +148,19 @@ test('match params (no match, base)', t => {
 	toMatch(t, '/hello/world', -1);
 });
 
+test('match params (root index-vs-param)', t => {
+	let foo = $.match('/', [$.parse('/')]);
+	t.same(foo[0], { old:'/', type: 0, val:'/' }, 'matches root-index route with index-static pattern');
+
+	let bar = $.match('/', [$.parse('/:title')]);
+	t.same(bar[0], undefined, 'does not match root-index route with param-pattern');
+
+	let baz = $.match('/narnia', [$.parse('/:title')]);
+	t.same(baz[0], { old:'/:title', type:1, val:'title' }, 'matches param-based route with param-pattern');
+
+	t.end();
+});
+
 test('match params (index-vs-param)', t => {
 	let foo = $.match('/books', [$.parse('/books/:title')]);
 	t.same(foo, [], 'does not match index route with param-pattern');
