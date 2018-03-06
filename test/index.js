@@ -150,13 +150,19 @@ test('match params (no match, base)', t => {
 
 test('match params (root index-vs-param)', t => {
 	let foo = $.match('/', [$.parse('/')]);
-	t.same(foo[0], { old:'/', type: 0, val:'/' }, 'matches root-index route with index-static pattern');
+	t.same(foo[0], { old:'/', type:0, val:'/' }, 'matches root-index route with index-static pattern');
 
 	let bar = $.match('/', [$.parse('/:title')]);
-	t.same(bar[0], undefined, 'does not match root-index route with param-pattern');
+	t.is(bar[0], undefined, 'does not match root-index route with param-pattern');
 
 	let baz = $.match('/narnia', [$.parse('/:title')]);
 	t.same(baz[0], { old:'/:title', type:1, val:'title' }, 'matches param-based route with param-pattern');
+
+	let bat = $.match('/', [$.parse('/:title?')]);
+	t.same(bat[0], { old:'/:title?', type:3, val:'title' }, 'matches root-index route with optional-param pattern');
+
+	let quz = $.match('/', [$.parse('*')]);
+	t.same(quz[0], { old:'*', type:2, val:'*' }, 'matches root-index route with root-wilcard pattern');
 
 	t.end();
 });
