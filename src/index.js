@@ -35,9 +35,7 @@ export function match(str, all) {
 	let i=0, fn=(o,x) => isMatch(segs[x], o);
 
 	for (; i < arr.length; i++) {
-		if (every(arr[i], fn)) {
-			return arr[i];
-		}
+		if (every(arr[i], fn)) return arr[i];
 	}
 
 	return [];
