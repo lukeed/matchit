@@ -21,7 +21,7 @@ function split(str) {
 }
 
 function isMatch(str, obj) {
-	return (obj.val === str && obj.type === STYPE) || obj.type !== (str === SEP ? PTYPE : STYPE);
+	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE);
 }
 
 export function match(str, all) {
