@@ -164,6 +164,12 @@ test('match params (root index-vs-param)', t => {
 	let quz = $.match('/', [$.parse('*')]);
 	t.same(quz[0], { old:'*', type:2, val:'*' }, 'matches root-index route with root-wilcard pattern');
 
+	let qut = $.match('/', ['/x', '*'].map($.parse));
+	t.same(qut[0], { old:'*', type:2, val:'*' }, 'matches root-index with wildcard pattern');
+
+	let qar = $.match('/', ['*', '/x'].map($.parse));
+	t.same(qar[0], { old:'*', type:2, val:'*' }, 'matches root-index with wildcard pattern (reorder)');
+
 	t.end();
 });
 
