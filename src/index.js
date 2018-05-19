@@ -1,7 +1,6 @@
 'use strict';
 
 import every from '@arr/every';
-import filter from '@arr/filter';
 
 const SEP = '/';
 // Types ~> static, param, any, optional
@@ -26,16 +25,13 @@ function isMatch(str, obj) {
 
 export function match(str, all) {
 	let segs=split(str), len=segs.length, l;
+	let i=0, tmp, fn=(o,x) => isMatch(segs[x], o);
 
-	// filter by segment length
-	let arr=filter(all, x => {
-		return (l=x.length) === len || (l < len && x[l-1].type === ATYPE) || (l > len && x[l-1].type === OTYPE);
-	});
-
-	let i=0, fn=(o,x) => isMatch(segs[x], o);
-
-	for (; i < arr.length; i++) {
-		if (every(arr[i], fn)) return arr[i];
+	for (; i < all.length; i++) {
+		tmp = all[i];
+		if ((l=tmp.length) === len || (l < len && tmp[l-1].type === ATYPE) || (l > len && tmp[l-1].type === OTYPE)) {
+			if (every(tmp, fn)) return tmp;
+		}
 	}
 
 	return [];

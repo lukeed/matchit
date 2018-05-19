@@ -33,8 +33,7 @@
     "url"
   ],
   "dependencies": {
-    "@arr/every": "^1.0.0",
-    "@arr/filter": "^1.0.0"
+    "@arr/every": "^1.0.0"
   },
   "devDependencies": {
     "mk-dirs": "^1.0.0",
