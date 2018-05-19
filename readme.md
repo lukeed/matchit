@@ -117,46 +117,48 @@ The route definition to use, via [`matchit.match`](#matchitmatchurl-routes).
 
 ## Benchmarks
 
+Running Node 6.11.1
+
 ```
 matchit.parse
-  --> 307,336 ops/sec ±0.52% (93 runs sampled)
+  --> 311,463 ops/sec ±0.39% (96 runs sampled)
 path-to-regexp
-  --> 61,995 ops/sec ±0.71% (91 runs sampled)
+  --> 63,187 ops/sec ±0.78% (95 runs sampled)
 path-to-regexp.parse
-  --> 211,109 ops/sec ±0.63% (92 runs sampled)
+  --> 194,130 ops/sec ±0.50% (97 runs sampled)
 
 matchit.match (index)
-  --> 5,197,884 ops/sec ±0.57% (95 runs sampled)
+  --> 19,015,297 ops/sec ±0.48% (95 runs sampled)
 path-to-regexp.exec (index)
-  --> 925,370 ops/sec ±0.55% (91 runs sampled)
+  --> 994,152 ops/sec ±0.50% (92 runs sampled)
 path-to-regexp.tokens (index)
-  --> 69,317 ops/sec ±0.48% (94 runs sampled)
+  --> 68,463 ops/sec ±0.41% (96 runs sampled)
 
 matchit.match (param)
-  --> 1,850,751 ops/sec ±0.87% (90 runs sampled)
+  --> 2,569,858 ops/sec ±0.98% (91 runs sampled)
 path-to-regexp.exec (param)
-  --> 818,080 ops/sec ±0.64% (94 runs sampled)
+  --> 903,529 ops/sec ±0.55% (90 runs sampled)
 path-to-regexp.tokens (param)
-  --> 68,879 ops/sec ±0.48% (94 runs sampled)
+  --> 68,158 ops/sec ±0.45% (93 runs sampled)
 
 matchit.match (optional)
-  --> 2,051,647 ops/sec ±0.87% (90 runs sampled)
+  --> 3,012,451 ops/sec ±1.57% (90 runs sampled)
 path-to-regexp.exec (optional)
-  --> 1,597,584 ops/sec ±0.67% (92 runs sampled)
+  --> 1,780,864 ops/sec ±0.48% (93 runs sampled)
 path-to-regexp.tokens (optional)
-  --> 72,507 ops/sec ±0.50% (96 runs sampled)
+  --> 71,376 ops/sec ±0.50% (93 runs sampled)
 
 matchit.match (wildcard)
-  --> 2,040,094 ops/sec ±0.80% (88 runs sampled)
+  --> 2,996,976 ops/sec ±1.18% (89 runs sampled)
 path-to-regexp.exec (wildcard)
-  --> 1,588,553 ops/sec ±0.81% (93 runs sampled)
+  --> 1,776,872 ops/sec ±0.52% (90 runs sampled)
 path-to-regexp.tokens (wildcard)
-  --> 71,419 ops/sec ±0.50% (91 runs sampled)
+  --> 70,687 ops/sec ±0.43% (95 runs sampled)
 
 matchit.exec (params)
-  --> 1,015,649 ops/sec ±0.73% (87 runs sampled)
+  --> 1,171,416 ops/sec ±0.66% (96 runs sampled)
 path-to-regexp.exec (params)
-  --> 72,230 ops/sec ±0.56% (95 runs sampled)
+  --> 71,773 ops/sec ±0.47% (96 runs sampled)
 ```
 
 ## License
