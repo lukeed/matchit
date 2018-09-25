@@ -1,7 +1,7 @@
 const test = require('tape');
 const $ = require('../lib/matchit');
 
-const ALL = ['/', '/about', 'contact', '/books', '/books/:title', '/foo/*', 'bar/:baz/:bat?'];
+const ALL = ['/', '/about', 'contact', '/books', '/books/:title', '/foo/*', 'bar/:baz/:bat?', '/videos/:title.mp4'];
 const PREP = ALL.map($.parse);
 
 function toMatch(t, url, idx) {
@@ -20,11 +20,13 @@ function isEntry(t, segs, expect) {
 	t.is(segs.length, expect.length, `~> entry has ${expect.length} segment(s)`)
 
 	segs.forEach((obj, idx) => {
-		t.is(Object.keys(obj).length, 3, '~~> segment has `old`, `type` & `val` keys');
+		t.is(Object.keys(obj).length, 4, '~~> segment has `old`, `type` & `val` keys');
 		t.is(typeof obj.type, 'number', '~~> segment.type is a number');
 		t.is(obj.type, expect[idx].type, '~~> segment.type returns expected value');
 		t.is(typeof obj.val, 'string', '~~> segment.val is a string');
 		t.is(obj.val, expect[idx].val, '~~> segment.val returns expected value');
+		t.is(typeof obj.end, 'string', '~~> segment.end is a string');
+		t.is(obj.end, expect[idx].end, '~~> segment.end returns expected value');
 	});
 }
 
@@ -61,53 +63,62 @@ test('parse empty', t => {
 test('parse index', t => {
 	const input = ['/'];
 	toParse(t, input, [
-		[{ type:0, val:'/' }]
+		[{ type:0, val:'/', end:'' }]
 	]);
 });
 
 test('parse statics', t => {
 	const input = ['/about', 'contact', '/foobar'];
 	toParse(t, input, [
-		[{ type:0, val:'about' }],
-		[{ type:0, val:'contact' }],
-		[{ type:0, val:'foobar' }],
+		[{ type:0, val:'about', end:'' }],
+		[{ type:0, val:'contact', end:'' }],
+		[{ type:0, val:'foobar', end:'' }],
 	]);
 });
 
 test('parse params', t => {
 	const input = ['/:foo', 'books/:title', '/foo/:bar'];
 	toParse(t, input, [
-		[{ type:1, val:'foo' }],
-		[{ type:0, val:'books' }, { type:1, val:'title' }],
-		[{ type:0, val:'foo' }, { type:1, val:'bar' }]
+		[{ type:1, val:'foo', end:'' }],
+		[{ type:0, val:'books', end:'' }, { type:1, val:'title', end:'' }],
+		[{ type:0, val:'foo', end:'' }, { type:1, val:'bar', end:'' }]
+	]);
+});
+
+test('parse params (suffix)', t => {
+	const input = ['/:foo.bar', 'books/:title.jpg', '/foo/:bar.html'];
+	toParse(t, input, [
+		[{ type:1, val:'foo', end:'.bar' }],
+		[{ type:0, val:'books', end:'' }, { type:1, val:'title', end:'.jpg' }],
+		[{ type:0, val:'foo', end:'' }, { type:1, val:'bar', end:'.html' }]
 	]);
 });
 
 test('parse params (multiple)', t => {
 	const input = ['/foo/:bar/:baz', '/foo/bar/:baz', '/foo/bar/:baz/:bat'];
 	toParse(t, input, [
-		[{ type:0, val:'foo' }, { type:1, val:'bar' }, { type:1, val:'baz' }],
-		[{ type:0, val:'foo' }, { type:0, val:'bar' }, { type:1, val:'baz' }],
-		[{ type:0, val:'foo' }, { type:0, val:'bar' }, { type:1, val:'baz' }, { type:1, val:'bat' }]
+		[{ type:0, val:'foo', end:'' }, { type:1, val:'bar', end:'' }, { type:1, val:'baz', end:'' }],
+		[{ type:0, val:'foo', end:'' }, { type:0, val:'bar', end:'' }, { type:1, val:'baz', end:'' }],
+		[{ type:0, val:'foo', end:'' }, { type:0, val:'bar', end:'' }, { type:1, val:'baz', end:'' }, { type:1, val:'bat', end:'' }]
 	]);
 });
 
 test('parse params (optional)', t => {
 	const input = ['/:foo?', 'foo/:bar?', '/foo/:bar?/:baz?'];
 	toParse(t, input, [
-		[{ type:3, val:'foo' }],
-		[{ type:0, val:'foo' }, { type:3, val:'bar' }],
-		[{ type:0, val:'foo' }, { type:3, val:'bar' }, { type:3, val:'baz' }],
+		[{ type:3, val:'foo', end:'' }],
+		[{ type:0, val:'foo', end:'' }, { type:3, val:'bar', end:'' }],
+		[{ type:0, val:'foo', end:'' }, { type:3, val:'bar', end:'' }, { type:3, val:'baz', end:'' }],
 	]);
 });
 
 test('parse wilds', t => {
 	const input = ['*', '/*', 'foo/*', 'foo/bar/*'];
 	toParse(t, input, [
-		[{ type:2, val:'*' }],
-		[{ type:2, val:'*' }],
-		[{ type:0, val:'foo' }, { type:2, val:'*' }],
-		[{ type:0, val:'foo' }, { type:0, val:'bar' }, { type:2, val:'*' }]
+		[{ type:2, val:'*', end:'' }],
+		[{ type:2, val:'*', end:'' }],
+		[{ type:0, val:'foo', end:'' }, { type:2, val:'*', end:'' }],
+		[{ type:0, val:'foo', end:'' }, { type:0, val:'bar', end:'' }, { type:2, val:'*', end:'' }]
 	]);
 });
 
@@ -150,25 +161,25 @@ test('match params (no match, base)', t => {
 
 test('match params (root index-vs-param)', t => {
 	let foo = $.match('/', [$.parse('/')]);
-	t.same(foo[0], { old:'/', type:0, val:'/' }, 'matches root-index route with index-static pattern');
+	t.same(foo[0], { old:'/', type:0, val:'/', end:'' }, 'matches root-index route with index-static pattern');
 
 	let bar = $.match('/', [$.parse('/:title')]);
 	t.is(bar[0], undefined, 'does not match root-index route with param-pattern');
 
 	let baz = $.match('/narnia', [$.parse('/:title')]);
-	t.same(baz[0], { old:'/:title', type:1, val:'title' }, 'matches param-based route with param-pattern');
+	t.same(baz[0], { old:'/:title', type:1, val:'title', end:'' }, 'matches param-based route with param-pattern');
 
 	let bat = $.match('/', [$.parse('/:title?')]);
-	t.same(bat[0], { old:'/:title?', type:3, val:'title' }, 'matches root-index route with optional-param pattern');
+	t.same(bat[0], { old:'/:title?', type:3, val:'title', end:'' }, 'matches root-index route with optional-param pattern');
 
 	let quz = $.match('/', [$.parse('*')]);
-	t.same(quz[0], { old:'*', type:2, val:'*' }, 'matches root-index route with root-wilcard pattern');
+	t.same(quz[0], { old:'*', type:2, val:'*', end:'' }, 'matches root-index route with root-wilcard pattern');
 
 	let qut = $.match('/', ['/x', '*'].map($.parse));
-	t.same(qut[0], { old:'*', type:2, val:'*' }, 'matches root-index with wildcard pattern');
+	t.same(qut[0], { old:'*', type:2, val:'*', end:'' }, 'matches root-index with wildcard pattern');
 
 	let qar = $.match('/', ['*', '/x'].map($.parse));
-	t.same(qar[0], { old:'*', type:2, val:'*' }, 'matches root-index with wildcard pattern (reorder)');
+	t.same(qar[0], { old:'*', type:2, val:'*', end:'' }, 'matches root-index with wildcard pattern (reorder)');
 
 	t.end();
 });
@@ -180,6 +191,19 @@ test('match params (index-vs-param)', t => {
 	t.same(bar, [], 'does not match param-based route with index-pattern');
 	t.end();
 });
+
+test('match params (suffix)', t => {
+	toMatch(t, '/videos/buckbunny.mp4', 7);
+});
+
+test('match params (suffix, nomatch)', t => {
+	toMatch(t, '/videos/buckbunny', -1);
+});
+
+// test('match params (suffix, nomatch)', t => {
+// 	let foo = $.match('/', [$.parse('/')]);
+// 	t.same(foo[0], { old:'/', type:0, val:'/', end:'' }, 'matches root-index route with index-static pattern');
+// });
 
 test('match params (optional)', t => {
 	toMatch(t, '/bar/hello', 6);
@@ -244,6 +268,17 @@ test('exec statics', t => {
 test('exec params', t => {
 	const arr = $.match('/books/foo', PREP);
 	const out = $.exec('/books/foo', arr);
+	t.is(typeof out, 'object', 'returns an object');
+	const keys = Object.keys(out);
+	t.is(keys.length, 1, 'returns object with 1 key');
+	t.is(keys[0], 'title', '~> contains `title` key');
+	t.is(out.title, 'foo', '~> adds `key:val` pair');
+	t.end();
+});
+
+test.only('exec params (suffix)', t => {
+	const arr = $.match('/videos/foo.mp4', PREP);
+	const out = $.exec('/videos/foo.mp4', arr);
 	t.is(typeof out, 'object', 'returns an object');
 	const keys = Object.keys(out);
 	t.is(keys.length, 1, 'returns object with 1 key');

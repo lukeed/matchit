@@ -20,7 +20,7 @@ function split(str) {
 }
 
 function isMatch(str, obj) {
-	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE);
+	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE && (str || '').endsWith(obj.end));
 }
 
 export function match(str, all) {
@@ -39,10 +39,10 @@ export function match(str, all) {
 
 export function parse(str) {
 	if (str === SEP) {
-		return [{ old:str, type:STYPE, val:str }];
+		return [{ old:str, type:STYPE, val:str, end:'' }];
 	}
 
-	let c, x, t, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
+	let c, x, t, sfx, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
 
 	while (++i < len) {
 		c = nxt.charCodeAt(i);
@@ -51,10 +51,14 @@ export function parse(str) {
 			j = i + 1; // begining of param
 			t = PTYPE; // set type
 			x = 0; // reset mark
+			sfx = '';
 
 			while (i < len && nxt.charCodeAt(i) !== SLASH) {
-				if (nxt.charCodeAt(i) === QMARK) {
+				c = nxt.charCodeAt(i);
+				if (c === QMARK) {
 					x=i; t=OTYPE;
+				} else if (c === 46 && sfx.length === 0) {
+					sfx = nxt.substring(x=i);
 				}
 				i++; // move on
 			}
@@ -62,7 +66,8 @@ export function parse(str) {
 			out.push({
 				old: str,
 				type: t,
-				val: nxt.substring(j, x||i)
+				val: nxt.substring(j, x||i),
+				end: sfx
 			});
 
 			// shorten string & update pointers
@@ -73,7 +78,8 @@ export function parse(str) {
 			out.push({
 				old: str,
 				type: ATYPE,
-				val: nxt.substring(i)
+				val: nxt.substring(i),
+				end: ''
 			});
 			continue; // loop
 		} else {
@@ -84,7 +90,8 @@ export function parse(str) {
 			out.push({
 				old: str,
 				type: STYPE,
-				val: nxt.substring(j, i)
+				val: nxt.substring(j, i),
+				end: ''
 			});
 			// shorten string & update pointers
 			nxt=nxt.substring(i); len-=i; i=j=0;
@@ -100,7 +107,7 @@ export function exec(str, arr) {
 		x=segs[i]; y=arr[i];
 		if (x === SEP) continue;
 		if (x !== void 0 && y.type | 2 === OTYPE) {
-			out[ y.val ] = x;
+			out[ y.val ] = x.replace(y.end, '');
 		}
 	}
 	return out;
