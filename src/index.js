@@ -20,7 +20,21 @@ function split(str) {
 }
 
 function isMatch(str, obj) {
-	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE && (str || '').endsWith(obj.end));
+	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE && (str || '').endsWith(obj.end) && (obj.matcher ? obj.matcher.test(str) : true));
+}
+
+function getMatcher (matchers, val) {
+	if (!matchers || !matchers[val]) {
+		return null;
+	}
+
+	const matcher = matchers[val];
+
+	if (typeof (matcher.test) !== 'function') {
+		throw new Error(`matcher for ${val} is not a regex`);
+	}
+
+	return matcher;
 }
 
 export function match(str, all) {
@@ -37,9 +51,9 @@ export function match(str, all) {
 	return [];
 }
 
-export function parse(str) {
+export function parse(str, matchers) {
 	if (str === SEP) {
-		return [{ old:str, type:STYPE, val:str, end:'' }];
+		return [{ old:str, type:STYPE, val:str, end:'', matcher: null }];
 	}
 
 	let c, x, t, sfx, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
@@ -63,11 +77,14 @@ export function parse(str) {
 				i++; // move on
 			}
 
+			const val = nxt.substring(j, x||i);
+
 			out.push({
 				old: str,
 				type: t,
-				val: nxt.substring(j, x||i),
-				end: sfx
+				val,
+				end: sfx,
+				matcher: getMatcher(matchers, val)
 			});
 
 			// shorten string & update pointers
@@ -79,7 +96,8 @@ export function parse(str) {
 				old: str,
 				type: ATYPE,
 				val: nxt.substring(i),
-				end: ''
+				end: '',
+				matcher: null
 			});
 			continue; // loop
 		} else {
@@ -87,11 +105,15 @@ export function parse(str) {
 			while (i < len && nxt.charCodeAt(i) !== SLASH) {
 				++i; // skip to next slash
 			}
+
+			const val = nxt.substring(j, i);
+
 			out.push({
 				old: str,
 				type: STYPE,
-				val: nxt.substring(j, i),
-				end: ''
+				val: val,
+				end: '',
+				matcher: getMatcher(matchers, val)
 			});
 			// shorten string & update pointers
 			nxt=nxt.substring(i); len-=i; i=j=0;
