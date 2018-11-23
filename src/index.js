@@ -56,7 +56,7 @@ export function parse(str, matchers) {
 		return [{ old:str, type:STYPE, val:str, end:'', matcher: null }];
 	}
 
-	let c, x, t, sfx, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
+	let c, x, t, sfx, val, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
 
 	while (++i < len) {
 		c = nxt.charCodeAt(i);
@@ -77,12 +77,12 @@ export function parse(str, matchers) {
 				i++; // move on
 			}
 
-			const val = nxt.substring(j, x||i);
+			val = nxt.substring(j, x||i);
 
 			out.push({
 				old: str,
 				type: t,
-				val,
+				val: val,
 				end: sfx,
 				matcher: getMatcher(matchers, val)
 			});
@@ -106,7 +106,7 @@ export function parse(str, matchers) {
 				++i; // skip to next slash
 			}
 
-			const val = nxt.substring(j, i);
+			val = nxt.substring(j, i);
 
 			out.push({
 				old: str,
