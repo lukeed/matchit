@@ -20,7 +20,8 @@
   "scripts": {
     "bench": "node bench",
     "build": "node builder",
-    "pretest": "npm run build",
+    "pretest": "node builder",
+    "prebench": "node builder",
     "test": "tape test/*.js | tap-spec"
   },
   "keywords": [
