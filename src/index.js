@@ -39,7 +39,7 @@ export function match(str, all) {
 
 export function parse(str, matchers) {
 	if (str === SEP) {
-		return [{ old:str, type:STYPE, val:str, end:'', matcher: null }];
+		return [{ old:str, type:STYPE, val:str, end:'' }];
 	}
 
 	if (typeof matchers === 'object') {
@@ -92,8 +92,7 @@ export function parse(str, matchers) {
 				old: str,
 				type: ATYPE,
 				val: nxt.substring(i),
-				end: '',
-				matcher: null
+				end: ''
 			});
 			continue; // loop
 		} else {
@@ -108,8 +107,7 @@ export function parse(str, matchers) {
 				old: str,
 				type: STYPE,
 				val: val,
-				end: '',
-				matcher: getMatcher(matchers, val)
+				end: ''
 			});
 			// shorten string & update pointers
 			nxt=nxt.substring(i); len-=i; i=j=0;
