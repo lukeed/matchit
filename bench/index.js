@@ -1,5 +1,6 @@
 const { Suite } = require('benchmark');
 const pathRegex = require('path-to-regexp');
+const regexparam = require('regexparam');
 const curr = require('../lib/matchit');
 
 const data = {};
@@ -16,6 +17,9 @@ bench('Parsing')
 	.add('matchit', _ => {
 		data.matchit = routes.map(curr.parse);
 	})
+	.add('regexparam', _ => {
+		data.regexparam = routes.map(regexparam);
+	})
 	.add('path-to-regexp', _ => {
 		data.pregex = routes.map(x => pathRegex(x));
 	})
@@ -26,6 +30,13 @@ bench('Parsing')
 
 bench('Match (index)')
 	.add('matchit', _ => curr.match('/', data.matchit))
+	.add('regexparam', _ => {
+		for (let i=0; i < data.regexparam.length; i++) {
+			if (data.regexparam[i].pattern.test('/')) {
+				return data.regexparam[i];
+			}
+		}
+	})
 	.add('path-to-regexp.exec', _ => data.pregex.filter(rgx => rgx.exec('/')))
 	.add('path-to-regexp.tokens', _ => {
 		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/'));
@@ -34,6 +45,13 @@ bench('Match (index)')
 
 bench('Match (param)')
 	.add('matchit', _ => curr.match('/bar/hello/world', data.matchit))
+	.add('regexparam', _ => {
+		for (let i=0; i < data.regexparam.length; i++) {
+			if (data.regexparam[i].pattern.test('/bar/hello/world')) {
+				return data.regexparam[i];
+			}
+		}
+	})
 	.add('path-to-regexp.exec', _ => data.pregex.filter(rgx => rgx.exec('/bar/hello/world')))
 	.add('path-to-regexp.tokens', _ => {
 		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/bar/hello/world'));
@@ -42,6 +60,13 @@ bench('Match (param)')
 
 bench('Match (optional)')
 	.add('matchit', _ => curr.match('/bar/baz', data.matchit))
+	.add('regexparam', _ => {
+		for (let i=0; i < data.regexparam.length; i++) {
+			if (data.regexparam[i].pattern.test('/bar/baz')) {
+				return data.regexparam[i];
+			}
+		}
+	})
 	.add('path-to-regexp.exec', _ => data.pregex.filter(rgx => rgx.exec('/bar/baz')))
 	.add('path-to-regexp.tokens', _ => {
 		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/bar/baz'));
@@ -50,6 +75,13 @@ bench('Match (optional)')
 
 bench('Match (wildcard)')
 	.add('matchit', _ => curr.match('/foo/bar', data.matchit))
+	.add('regexparam', _ => {
+		for (let i=0; i < data.regexparam.length; i++) {
+			if (data.regexparam[i].pattern.test('/foo/bar')) {
+				return data.regexparam[i];
+			}
+		}
+	})
 	.add('path-to-regexp.exec', _ => data.pregex.filter(rgx => rgx.exec('/foo/bar')))
 	.add('path-to-regexp.tokens', _ => {
 		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/foo/bar'));
@@ -59,6 +91,19 @@ bench('Match (wildcard)')
 function matchitParams(uri) {
 	let arr = curr.match(uri, data.matchit);
 	return curr.exec(uri, arr);
+}
+
+function toParam(uri) {
+	let i=0, j=0, out={}, tmp, matches;
+	for (; i < data.regexparam.length;) {
+		tmp = data.regexparam[i++];
+	  matches = tmp.pattern.exec(uri);
+	  if (matches == null) continue;
+	  while (j < tmp.keys.length) {
+	    out[ tmp.keys[j] ] = matches[++j] || null;
+	  }
+	  return out;
+	}
 }
 
 function pathRegexParams(uri) {
@@ -83,5 +128,6 @@ function pathRegexParams(uri) {
 
 bench('Exec')
 	.add('matchit', _ => matchitParams('/books/foobar'))
+	.add('regexparam', _ => toParam('/books/foobar'))
 	.add('path-to-regexp', _ => pathRegexParams('/books/foobar'))
 	.run();
