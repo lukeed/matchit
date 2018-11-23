@@ -20,21 +20,7 @@ function split(str) {
 }
 
 function isMatch(str, obj) {
-	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE && (str || '').endsWith(obj.end) && (obj.matcher ? obj.matcher.test(str) : true));
-}
-
-function getMatcher (matchers, val) {
-	if (!matchers || !matchers[val]) {
-		return null;
-	}
-
-	const matcher = matchers[val];
-
-	if (typeof (matcher.test) !== 'function') {
-		throw new Error(`matcher for ${val} is not a regex`);
-	}
-
-	return matcher;
+	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE && (str || '').endsWith(obj.end) && (!!obj.matcher ? obj.matcher.test(str) : true));
 }
 
 export function match(str, all) {
@@ -54,6 +40,16 @@ export function match(str, all) {
 export function parse(str, matchers) {
 	if (str === SEP) {
 		return [{ old:str, type:STYPE, val:str, end:'', matcher: null }];
+	}
+
+	if (typeof matchers === 'object') {
+		for (let k in matchers) {
+			if (matchers[k].constructor !== RegExp) {
+				throw new Error(`the "${k}" key is not a RegExp`);
+			}
+		}
+	} else {
+		matchers = {};
 	}
 
 	let c, x, t, sfx, val, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
@@ -84,7 +80,7 @@ export function parse(str, matchers) {
 				type: t,
 				val: val,
 				end: sfx,
-				matcher: getMatcher(matchers, val)
+				matcher: matchers[val]
 			});
 
 			// shorten string & update pointers
