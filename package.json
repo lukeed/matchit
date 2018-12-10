@@ -1,6 +1,6 @@
 {
   "name": "matchit",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "repository": "lukeed/matchit",
   "description": "Quickly parse & match URLs",
   "module": "lib/matchit.mjs",
