@@ -276,7 +276,7 @@ test('exec params', t => {
 	t.end();
 });
 
-test.only('exec params (suffix)', t => {
+test('exec params (suffix)', t => {
 	const arr = $.match('/videos/foo.mp4', PREP);
 	const out = $.exec('/videos/foo.mp4', arr);
 	t.is(typeof out, 'object', 'returns an object');

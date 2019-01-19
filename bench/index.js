@@ -1,14 +1,24 @@
-const Table = require('cli-table2');
 const { Suite } = require('benchmark');
 const pathRegex = require('path-to-regexp');
+const regexparam = require('regexparam');
 const curr = require('../lib/matchit');
 
 const data = {};
 const routes = ['/', '/about', 'books', '/books/:title', '/foo/*', '/bar/:baz/:bat?'];
 
-new Suite()
-	.add('matchit.parse', _ => {
+function bench(name) {
+  console.log(`\n# ${name}`);
+  const suite = new Suite();
+  suite.on('cycle', e => console.log('  ' + e.target));
+  return suite;
+}
+
+bench('Parsing')
+	.add('matchit', _ => {
 		data.matchit = routes.map(curr.parse);
+	})
+	.add('regexparam', _ => {
+		data.regexparam = routes.map(regexparam);
 	})
 	.add('path-to-regexp', _ => {
 		data.pregex = routes.map(x => pathRegex(x));
@@ -16,53 +26,84 @@ new Suite()
 	.add('path-to-regexp.parse', _ => {
 		data.ptokens = routes.map(pathRegex.parse);
 	})
-	.on('cycle', e => console.log(String(e.target)))
-	.on('complete', onComplete)
 	.run();
 
-new Suite()
-	.add('matchit.match (index)', _ => curr.match('/', data.matchit))
-	.add('path-to-regexp.exec (index)', _ => data.pregex.filter(rgx => rgx.exec('/')))
-	.add('path-to-regexp.tokens (index)', _ => {
+bench('Match (index)')
+	.add('matchit', _ => curr.match('/', data.matchit))
+	.add('regexparam', _ => {
+		for (let i=0; i < data.regexparam.length; i++) {
+			if (data.regexparam[i].pattern.test('/')) {
+				return data.regexparam[i];
+			}
+		}
+	})
+	.add('path-to-regexp.exec', _ => data.pregex.filter(rgx => rgx.exec('/')))
+	.add('path-to-regexp.tokens', _ => {
 		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/'));
 	})
-	.on('cycle', e => console.log(String(e.target)))
-	.on('complete', onComplete)
 	.run();
 
-new Suite()
-	.add('matchit.match (param)', _ => curr.match('/bar/hello/world', data.matchit))
-	.add('path-to-regexp.exec (param)', _ => data.pregex.filter(rgx => rgx.exec('/bar/hello/world')))
-	.add('path-to-regexp.tokens (param)', _ => {
+bench('Match (param)')
+	.add('matchit', _ => curr.match('/bar/hello/world', data.matchit))
+	.add('regexparam', _ => {
+		for (let i=0; i < data.regexparam.length; i++) {
+			if (data.regexparam[i].pattern.test('/bar/hello/world')) {
+				return data.regexparam[i];
+			}
+		}
+	})
+	.add('path-to-regexp.exec', _ => data.pregex.filter(rgx => rgx.exec('/bar/hello/world')))
+	.add('path-to-regexp.tokens', _ => {
 		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/bar/hello/world'));
 	})
-	.on('cycle', e => console.log(String(e.target)))
-	.on('complete', onComplete)
 	.run();
 
-new Suite()
-	.add('matchit.match (optional)', _ => curr.match('/foo/bar', data.matchit))
-	.add('path-to-regexp.exec (optional)', _ => data.pregex.filter(rgx => rgx.exec('/foo/bar')))
-	.add('path-to-regexp.tokens (optional)', _ => {
-		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/foo/bar'));
+bench('Match (optional)')
+	.add('matchit', _ => curr.match('/bar/baz', data.matchit))
+	.add('regexparam', _ => {
+		for (let i=0; i < data.regexparam.length; i++) {
+			if (data.regexparam[i].pattern.test('/bar/baz')) {
+				return data.regexparam[i];
+			}
+		}
 	})
-	.on('cycle', e => console.log(String(e.target)))
-	.on('complete', onComplete)
+	.add('path-to-regexp.exec', _ => data.pregex.filter(rgx => rgx.exec('/bar/baz')))
+	.add('path-to-regexp.tokens', _ => {
+		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/bar/baz'));
+	})
 	.run();
 
-new Suite()
-	.add('matchit.match (wildcard)', _ => curr.match('/foo/bar', data.matchit))
-	.add('path-to-regexp.exec (wildcard)', _ => data.pregex.filter(rgx => rgx.exec('/foo/bar')))
-	.add('path-to-regexp.tokens (wildcard)', _ => {
+bench('Match (wildcard)')
+	.add('matchit', _ => curr.match('/foo/bar', data.matchit))
+	.add('regexparam', _ => {
+		for (let i=0; i < data.regexparam.length; i++) {
+			if (data.regexparam[i].pattern.test('/foo/bar')) {
+				return data.regexparam[i];
+			}
+		}
+	})
+	.add('path-to-regexp.exec', _ => data.pregex.filter(rgx => rgx.exec('/foo/bar')))
+	.add('path-to-regexp.tokens', _ => {
 		data.ptokens.map(x => pathRegex.tokensToRegExp(x)).filter(rgx => rgx.exec('/foo/bar'));
 	})
-	.on('cycle', e => console.log(String(e.target)))
-	.on('complete', onComplete)
 	.run();
 
 function matchitParams(uri) {
 	let arr = curr.match(uri, data.matchit);
 	return curr.exec(uri, arr);
+}
+
+function toParam(uri) {
+	let i=0, j=0, out={}, tmp, matches;
+	for (; i < data.regexparam.length;) {
+		tmp = data.regexparam[i++];
+	  matches = tmp.pattern.exec(uri);
+	  if (matches == null) continue;
+	  while (j < tmp.keys.length) {
+	    out[ tmp.keys[j] ] = matches[++j] || null;
+	  }
+	  return out;
+	}
 }
 
 function pathRegexParams(uri) {
@@ -85,25 +126,8 @@ function pathRegexParams(uri) {
 	return obj;
 }
 
-new Suite()
-	.add('matchit.exec (params)', _ => matchitParams('/books/foobar'))
-	.add('path-to-regexp.exec (params)', _ => pathRegexParams('/books/foobar'))
-	.on('cycle', e => console.log(String(e.target)))
-	.on('complete', onComplete)
+bench('Exec')
+	.add('matchit', _ => matchitParams('/books/foobar'))
+	.add('regexparam', _ => toParam('/books/foobar'))
+	.add('path-to-regexp', _ => pathRegexParams('/books/foobar'))
 	.run();
-
-function onComplete() {
-	console.log('Fastest is ' + this.filter('fastest').map('name'));
-
-	const tbl = new Table({
-		head: ['Name', 'Mean time', 'Ops/sec', 'Diff']
-	});
-
-	let prev, diff;
-	this.forEach(el => {
-		diff = prev ? (((el.hz - prev) * 100 / prev).toFixed(2) + '% faster') : 'N/A';
-		tbl.push([el.name, el.stats.mean, el.hz.toLocaleString(), diff])
-		prev = el.hz;
-	});
-	console.log(tbl.toString());
-}

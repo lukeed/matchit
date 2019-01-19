@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "benchmark": "^2.1.4",
-    "cli-table2": "^0.2.0",
-    "path-to-regexp": "^2.1.0"
+    "path-to-regexp": "^2.4.0",
+    "regexparam": "^1.0.1"
   }
 }
