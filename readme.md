@@ -121,39 +121,39 @@ The route definition to use, via [`matchit.match`](#matchitmatchurl-routes).
 
 ```
 # Parsing
-  matchit                x 1,460,292 ops/sec ±4.07% (97 runs sampled)
-  regexparam             x   415,862 ops/sec ±0.10% (96 runs sampled)
-  path-to-regexp         x    81,541 ops/sec ±0.66% (93 runs sampled)
-  path-to-regexp.parse   x   416,109 ops/sec ±1.35% (90 runs sampled)
+  matchit                x 1,501,130 ops/sec ±0.27% (93 runs sampled)
+  regexparam             x   406,465 ops/sec ±0.22% (96 runs sampled)
+  path-to-regexp         x    83,692 ops/sec ±0.76% (91 runs sampled)
+  path-to-regexp.parse   x   421,593 ops/sec ±1.29% (90 runs sampled)
 
 # Match (index)
-  matchit                x 71,183,130 ops/sec ±0.59% (94 runs sampled)
-  regexparam             x 48,959,096 ops/sec ±0.17% (97 runs sampled)
-  path-to-regexp.exec    x  7,004,677 ops/sec ±0.34% (97 runs sampled)
-  path-to-regexp.tokens  x     99,730 ops/sec ±0.35% (97 runs sampled)
+  matchit                x 71,761,834 ops/sec ±0.30% (95 runs sampled)
+  regexparam             x 48,757,150 ops/sec ±0.50% (97 runs sampled)
+  path-to-regexp.exec    x  7,073,405 ops/sec ±1.13% (95 runs sampled)
+  path-to-regexp.tokens  x    101,567 ops/sec ±0.37% (93 runs sampled)
 
 # Match (param)
-  matchit                x 2,603,951 ops/sec ±0.37% (96 runs sampled)
-  regexparam             x 6,177,036 ops/sec ±0.39% (94 runs sampled)
-  path-to-regexp.exec    x 4,810,037 ops/sec ±0.23% (96 runs sampled)
-  path-to-regexp.tokens  x    98,713 ops/sec ±0.16% (98 runs sampled)
+  matchit                x 2,685,377 ops/sec ±0.51% (93 runs sampled)
+  regexparam             x 6,855,532 ops/sec ±0.76% (90 runs sampled)
+  path-to-regexp.exec    x 4,627,436 ops/sec ±1.54% (93 runs sampled)
+  path-to-regexp.tokens  x   102,118 ops/sec ±0.25% (96 runs sampled)
 
 # Match (optional)
-  matchit                x 2,714,604 ops/sec ±0.75% (96 runs sampled)
-  regexparam             x 8,013,834 ops/sec ±0.31% (95 runs sampled)
-  path-to-regexp.exec    x 5,745,747 ops/sec ±1.56% (91 runs sampled)
-  path-to-regexp.tokens  x    99,505 ops/sec ±0.17% (96 runs sampled)
+  matchit                x 2,775,285 ops/sec ±0.83% (93 runs sampled)
+  regexparam             x 8,559,692 ops/sec ±0.48% (94 runs sampled)
+  path-to-regexp.exec    x 5,854,774 ops/sec ±0.33% (96 runs sampled)
+  path-to-regexp.tokens  x   102,330 ops/sec ±0.48% (93 runs sampled)
 
 # Match (wildcard)
-  matchit                x 3,283,630 ops/sec ±1.01% (96 runs sampled)
-  regexparam             x 9,765,801 ops/sec ±0.70% (91 runs sampled)
-  path-to-regexp.exec    x 8,091,002 ops/sec ±0.35% (95 runs sampled)
-  path-to-regexp.tokens  x    99,979 ops/sec ±0.44% (96 runs sampled)
+  matchit                x  3,294,458 ops/sec ±1.05% (95 runs sampled)
+  regexparam             x 10,831,738 ops/sec ±0.53% (97 runs sampled)
+  path-to-regexp.exec    x  8,817,117 ops/sec ±0.51% (93 runs sampled)
+  path-to-regexp.tokens  x    102,633 ops/sec ±0.26% (93 runs sampled)
 
 # Exec
-  matchit                x 1,532,356 ops/sec ±0.11% (98 runs sampled)
-  regexparam             x 6,623,901 ops/sec ±0.15% (94 runs sampled)
-  path-to-regexp         x    98,759 ops/sec ±0.44% (97 runs sampled)
+  matchit                x 1,520,250 ops/sec ±0.36% (97 runs sampled)
+  regexparam             x 6,825,224 ops/sec ±0.38% (96 runs sampled)
+  path-to-regexp         x   100,102 ops/sec ±0.45% (90 runs sampled)
 ```
 
 ## Related
