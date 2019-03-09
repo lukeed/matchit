@@ -18,10 +18,10 @@
     "node": ">=6"
   },
   "scripts": {
+    "build": "bundt",
     "bench": "node bench",
-    "build": "node builder",
-    "pretest": "node builder",
-    "prebench": "node builder",
+    "pretest": "npm run build",
+    "prebench": "npm run build",
     "test": "tape test/*.js | tap-spec"
   },
   "keywords": [
@@ -37,8 +37,7 @@
     "@arr/every": "^1.0.0"
   },
   "devDependencies": {
-    "mk-dirs": "^1.0.0",
-    "rewrite-imports": "^1.0.0",
+    "bundt": "^0.3.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3"
   }
