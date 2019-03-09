@@ -117,49 +117,49 @@ The route definition to use, via [`matchit.match`](#matchitmatchurl-routes).
 
 ## Benchmarks
 
-Running Node 6.11.1
+> Running Node v10.13.0
 
 ```
-matchit.parse
-  --> 311,463 ops/sec ±0.39% (96 runs sampled)
-path-to-regexp
-  --> 63,187 ops/sec ±0.78% (95 runs sampled)
-path-to-regexp.parse
-  --> 194,130 ops/sec ±0.50% (97 runs sampled)
+# Parsing
+  matchit                x 1,460,292 ops/sec ±4.07% (97 runs sampled)
+  regexparam             x   415,862 ops/sec ±0.10% (96 runs sampled)
+  path-to-regexp         x    81,541 ops/sec ±0.66% (93 runs sampled)
+  path-to-regexp.parse   x   416,109 ops/sec ±1.35% (90 runs sampled)
 
-matchit.match (index)
-  --> 19,015,297 ops/sec ±0.48% (95 runs sampled)
-path-to-regexp.exec (index)
-  --> 994,152 ops/sec ±0.50% (92 runs sampled)
-path-to-regexp.tokens (index)
-  --> 68,463 ops/sec ±0.41% (96 runs sampled)
+# Match (index)
+  matchit                x 71,183,130 ops/sec ±0.59% (94 runs sampled)
+  regexparam             x 48,959,096 ops/sec ±0.17% (97 runs sampled)
+  path-to-regexp.exec    x  7,004,677 ops/sec ±0.34% (97 runs sampled)
+  path-to-regexp.tokens  x     99,730 ops/sec ±0.35% (97 runs sampled)
 
-matchit.match (param)
-  --> 2,569,858 ops/sec ±0.98% (91 runs sampled)
-path-to-regexp.exec (param)
-  --> 903,529 ops/sec ±0.55% (90 runs sampled)
-path-to-regexp.tokens (param)
-  --> 68,158 ops/sec ±0.45% (93 runs sampled)
+# Match (param)
+  matchit                x 2,603,951 ops/sec ±0.37% (96 runs sampled)
+  regexparam             x 6,177,036 ops/sec ±0.39% (94 runs sampled)
+  path-to-regexp.exec    x 4,810,037 ops/sec ±0.23% (96 runs sampled)
+  path-to-regexp.tokens  x    98,713 ops/sec ±0.16% (98 runs sampled)
 
-matchit.match (optional)
-  --> 3,012,451 ops/sec ±1.57% (90 runs sampled)
-path-to-regexp.exec (optional)
-  --> 1,780,864 ops/sec ±0.48% (93 runs sampled)
-path-to-regexp.tokens (optional)
-  --> 71,376 ops/sec ±0.50% (93 runs sampled)
+# Match (optional)
+  matchit                x 2,714,604 ops/sec ±0.75% (96 runs sampled)
+  regexparam             x 8,013,834 ops/sec ±0.31% (95 runs sampled)
+  path-to-regexp.exec    x 5,745,747 ops/sec ±1.56% (91 runs sampled)
+  path-to-regexp.tokens  x    99,505 ops/sec ±0.17% (96 runs sampled)
 
-matchit.match (wildcard)
-  --> 2,996,976 ops/sec ±1.18% (89 runs sampled)
-path-to-regexp.exec (wildcard)
-  --> 1,776,872 ops/sec ±0.52% (90 runs sampled)
-path-to-regexp.tokens (wildcard)
-  --> 70,687 ops/sec ±0.43% (95 runs sampled)
+# Match (wildcard)
+  matchit                x 3,283,630 ops/sec ±1.01% (96 runs sampled)
+  regexparam             x 9,765,801 ops/sec ±0.70% (91 runs sampled)
+  path-to-regexp.exec    x 8,091,002 ops/sec ±0.35% (95 runs sampled)
+  path-to-regexp.tokens  x    99,979 ops/sec ±0.44% (96 runs sampled)
 
-matchit.exec (params)
-  --> 1,171,416 ops/sec ±0.66% (96 runs sampled)
-path-to-regexp.exec (params)
-  --> 71,773 ops/sec ±0.47% (96 runs sampled)
+# Exec
+  matchit                x 1,532,356 ops/sec ±0.11% (98 runs sampled)
+  regexparam             x 6,623,901 ops/sec ±0.15% (94 runs sampled)
+  path-to-regexp         x    98,759 ops/sec ±0.44% (97 runs sampled)
 ```
+
+## Related
+
+- [regexparam](https://github.com/lukeed/regexparam) - A similar (285B) utility, but relies on `RegExp` instead of String comparisons.
+
 
 ## License
 
