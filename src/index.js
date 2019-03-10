@@ -20,7 +20,7 @@ function split(str) {
 }
 
 function isMatch(str, obj) {
-	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE && (str || '').endsWith(obj.end));
+	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE && (str || '').endsWith(obj.end) && (!!obj.matcher ? obj.matcher.test(str) : true));
 }
 
 export function match(str, all) {
@@ -37,12 +37,22 @@ export function match(str, all) {
 	return [];
 }
 
-export function parse(str) {
+export function parse(str, matchers) {
 	if (str === SEP) {
 		return [{ old:str, type:STYPE, val:str, end:'' }];
 	}
 
-	let c, x, t, sfx, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
+	if (typeof matchers === 'object') {
+		for (let k in matchers) {
+			if (matchers[k].constructor !== RegExp) {
+				throw new Error(`the "${k}" key is not a RegExp`);
+			}
+		}
+	} else {
+		matchers = {};
+	}
+
+	let c, x, t, sfx, val, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
 
 	while (++i < len) {
 		c = nxt.charCodeAt(i);
@@ -63,11 +73,14 @@ export function parse(str) {
 				i++; // move on
 			}
 
+			val = nxt.substring(j, x||i);
+
 			out.push({
 				old: str,
 				type: t,
-				val: nxt.substring(j, x||i),
-				end: sfx
+				val: val,
+				end: sfx,
+				matcher: matchers[val]
 			});
 
 			// shorten string & update pointers
@@ -87,10 +100,13 @@ export function parse(str) {
 			while (i < len && nxt.charCodeAt(i) !== SLASH) {
 				++i; // skip to next slash
 			}
+
+			val = nxt.substring(j, i);
+
 			out.push({
 				old: str,
 				type: STYPE,
-				val: nxt.substring(j, i),
+				val: val,
 				end: ''
 			});
 			// shorten string & update pointers

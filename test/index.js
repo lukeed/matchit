@@ -20,7 +20,8 @@ function isEntry(t, segs, expect) {
 	t.is(segs.length, expect.length, `~> entry has ${expect.length} segment(s)`)
 
 	segs.forEach((obj, idx) => {
-		t.is(Object.keys(obj).length, 4, '~~> segment has `old`, `type` & `val` keys');
+		let isParam = [1, 3].includes(obj.type);
+		t.is(Object.keys(obj).length, isParam ? 5 : 4, '~~> segment has `old`, `type` & `val` keys');
 		t.is(typeof obj.type, 'number', '~~> segment.type is a number');
 		t.is(obj.type, expect[idx].type, '~~> segment.type returns expected value');
 		t.is(typeof obj.val, 'string', '~~> segment.val is a string');
@@ -167,10 +168,10 @@ test('match params (root index-vs-param)', t => {
 	t.is(bar[0], undefined, 'does not match root-index route with param-pattern');
 
 	let baz = $.match('/narnia', [$.parse('/:title')]);
-	t.same(baz[0], { old:'/:title', type:1, val:'title', end:'' }, 'matches param-based route with param-pattern');
+	t.same(baz[0], { old:'/:title', type:1, val:'title', end:'', matcher:undefined }, 'matches param-based route with param-pattern');
 
 	let bat = $.match('/', [$.parse('/:title?')]);
-	t.same(bat[0], { old:'/:title?', type:3, val:'title', end:'' }, 'matches root-index route with optional-param pattern');
+	t.same(bat[0], { old:'/:title?', type:3, val:'title', end:'', matcher:undefined }, 'matches root-index route with optional-param pattern');
 
 	let quz = $.match('/', [$.parse('*')]);
 	t.same(quz[0], { old:'*', type:2, val:'*', end:'' }, 'matches root-index route with root-wilcard pattern');
@@ -336,5 +337,55 @@ test('exec empty (no match)', t => {
 	const out = $.exec('foo', PREP[0]);
 	t.is(typeof out, 'object', 'returns an object');
 	t.is(Object.keys(out).length, 0, 'returns an empty object');
+	t.end();
+});
+
+test('match params not a regex (raise error)', t => {
+	const foo = () => $.parse('/foo/:bar', {
+		bar: 1
+	});
+
+	t.throws(foo, /key is not a RegExp/, 'matcher must be a regex');
+	t.end();
+});
+
+test('match params via matcher (no match)', t => {
+	const foo = $.parse('/foo/:bar', {
+		bar: /[a-z]+/
+	});
+
+	t.is($.match('/foo/1', [foo]).length, 0, 'no match found');
+	t.end();
+});
+
+test('match params via matcher (found match)', t => {
+	const foo = $.parse('/foo/:bar', {
+		bar: /[a-z]+/
+	});
+
+	t.deepEqual($.match('/foo/bar', [foo]), foo);
+	t.end();
+});
+
+test('match params via matcher (optional-param)', t => {
+	const foo = $.parse('/foo/:bar?', {
+		bar: /[a-z]+/
+	});
+
+	t.deepEqual($.match('/foo', [foo]), foo);
+	t.is($.match('/foo/1', [foo]).length, 0);
+	t.end();
+});
+
+test('continue match when matcher regex fails', t => {
+	const foo = $.parse('/foo/:bar?', {
+		bar: /[a-z]+/
+	});
+
+	const foo1 = $.parse('/foo/:id?', {
+		bar: /[0-9]+/
+	});
+
+	t.deepEqual($.match('/foo/1', [foo, foo1]), foo1);
 	t.end();
 });
