@@ -19,16 +19,14 @@ function split(str) {
 	return (str=strip(str)) === SEP ? [SEP] : str.split(SEP);
 }
 
-function isMatch(str, obj) {
-	return (obj.val === str && obj.type === STYPE) || (str === SEP ? obj.type > PTYPE : obj.type !== STYPE && (str || '').endsWith(obj.end));
+function isMatch(arr, obj, idx) {
+	idx = arr[idx];
+	return (obj.val === idx && obj.type === STYPE) || (idx === SEP ? obj.type > PTYPE : obj.type !== STYPE && (idx || '').endsWith(obj.end));
 }
 
 export function match(str, all) {
-
-  function fn (o,x) {
-    return isMatch(segs[x], o);
-  }
 	var i=0, tmp, segs=split(str), len=segs.length, l;
+	var fn = isMatch.bind(isMatch, segs);
 
 	for (; i < all.length; i++) {
 		tmp = all[i];
