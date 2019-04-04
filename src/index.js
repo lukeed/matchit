@@ -24,12 +24,11 @@ function isMatch(str, obj) {
 }
 
 export function match(str, all) {
-	let segs=split(str), len=segs.length, l;
-  let i=0, tmp;
 
   function fn (o,x) {
     return isMatch(segs[x], o);
   }
+	var i=0, tmp, segs=split(str), len=segs.length, l;
 
 	for (; i < all.length; i++) {
 		tmp = all[i];
@@ -46,7 +45,7 @@ export function parse(str) {
 		return [{ old:str, type:STYPE, val:str, end:'' }];
 	}
 
-	let c, x, t, sfx, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
+	var c, x, t, sfx, nxt=strip(str), i=-1, j=0, len=nxt.length, out=[];
 
 	while (++i < len) {
 		c = nxt.charCodeAt(i);
@@ -106,7 +105,7 @@ export function parse(str) {
 }
 
 export function exec(str, arr) {
-	let i=0, x, y, segs=split(str), out={};
+	var i=0, x, y, segs=split(str), out={};
 	for (; i < arr.length; i++) {
 		x=segs[i]; y=arr[i];
 		if (x === SEP) continue;
