@@ -25,7 +25,11 @@ function isMatch(str, obj) {
 
 export function match(str, all) {
 	let segs=split(str), len=segs.length, l;
-	let i=0, tmp, fn=(o,x) => isMatch(segs[x], o);
+  let i=0, tmp;
+
+  function fn (o,x) {
+    return isMatch(segs[x], o);
+  }
 
 	for (; i < all.length; i++) {
 		tmp = all[i];
