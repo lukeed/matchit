@@ -5,9 +5,11 @@
   "description": "Quickly parse & match URLs",
   "module": "lib/matchit.mjs",
   "main": "lib/matchit.js",
+  "types": "index.d.ts",
   "license": "MIT",
   "files": [
-    "lib"
+    "lib",
+    "index.d.ts"
   ],
   "author": {
     "name": "Luke Edwards",
