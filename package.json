@@ -8,8 +8,8 @@
   "types": "index.d.ts",
   "license": "MIT",
   "files": [
-    "lib",
-    "index.d.ts"
+    "*.d.ts",
+    "lib"
   ],
   "author": {
     "name": "Luke Edwards",
