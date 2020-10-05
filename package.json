@@ -5,8 +5,10 @@
   "description": "Quickly parse & match URLs",
   "module": "lib/matchit.mjs",
   "main": "lib/matchit.js",
+  "types": "index.d.ts",
   "license": "MIT",
   "files": [
+    "*.d.ts",
     "lib"
   ],
   "author": {
