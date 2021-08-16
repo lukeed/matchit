@@ -5,7 +5,7 @@ import every from '@arr/every';
 const SEP = '/';
 // Types ~> static, param, any, optional
 const STYPE=0, PTYPE=1, ATYPE=2, OTYPE=3;
-// Char Codes ~> / : *
+// Char Codes ~> / : * ?
 const SLASH=47, COLON=58, ASTER=42, QMARK=63;
 
 function strip(str) {
