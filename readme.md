@@ -16,24 +16,24 @@ const { exec, match, parse } = require('matchit');
 
 parse('/foo/:bar/:baz?');
 //=> [
-//=>   { old:'/foo/:bar', type:0, val:'foo' },
-//=>   { old:'/foo/:bar', type:1, val:'bar' },
-//=>   { old:'/foo/:bar', type:3, val:'baz' }
+//=>   { old:'/foo/:bar', type:0, val:'foo', end: '' },
+//=>   { old:'/foo/:bar', type:1, val:'bar', end: '' },
+//=>   { old:'/foo/:bar', type:3, val:'baz', end: '' }
 //=> ]
 
 const routes = ['/', '/foo', 'bar', '/baz', '/baz/:title','/bat/*'].map(parse);
 
 match('/', routes);
-//=> [{ old:'/', type:0, val:'/' }]
+//=> [{ old:'/', type:0, val:'/', end: '' }]
 
 match('/foo', routes);
-//=> [{ old:'/foo', type:0, val:'foo' }]
+//=> [{ old:'/foo', type:0, val:'foo', end: '' }]
 
 match('/bar', routes);
-//=> [{ old:'bar', type:0, val:'bar' }]
+//=> [{ old:'bar', type:0, val:'bar', end: '' }]
 
 match('/baz', routes);
-//=> [{ old:'/baz', type:0, val:'baz' }]
+//=> [{ old:'/baz', type:0, val:'baz', end: '' }]
 
 let a = match('/baz/hello', routes);
 //=> [{...}, {...}]
@@ -42,8 +42,8 @@ let b = exec('/baz/hello', a);
 
 match('/bat/quz/qut', routes);
 //=> [
-//=>   { old:'/bat/*', type:0, val:'bat' },
-//=>   { old:'/bat/*', type:2, val:'*' }
+//=>   { old:'/bat/*', type:0, val:'bat', end: '' },
+//=>   { old:'/bat/*', type:2, val:'*', end: '' }
 //=> ]
 ```
 
@@ -63,6 +63,7 @@ The `route` is `split` and parsed into a "definition" array of objects. Each obj
     * `2` - any/wildcard
     * `3` - optional param
 * `val` &mdash; The current segment's value. This is either a static value of the name of a parameter
+* `end` &mdash; The suffix of a parameter
 
 #### route
 
